@@ -85,3 +85,45 @@ footer{
     padding:40px;
     margin-top:60px;
 }
+/* ===== Version 2.0 ===== */
+
+html{
+    scroll-behavior:smooth;
+}
+
+.card{
+    transition:0.35s;
+    cursor:pointer;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 20px 40px rgba(0,0,0,.18);
+}
+
+.card img{
+    height:320px;
+    object-fit:cover;
+    transition:0.35s;
+}
+
+.card:hover img{
+    transform:scale(1.05);
+}
+
+h2{
+    font-size:36px;
+    margin-bottom:20px;
+}
+
+header{
+    background:linear-gradient(to bottom,#1b1b1b,#2d2d2d);
+}
+
+.btn{
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
