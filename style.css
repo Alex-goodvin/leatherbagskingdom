@@ -127,3 +127,32 @@ header{
 .btn:hover{
     transform:scale(1.05);
 }
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+}
+
+.nav-links{
+    display:flex;
+    list-style:none;
+    gap:30px;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:#d4a373;
+}
+
+.logo{
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+}
