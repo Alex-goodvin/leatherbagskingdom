@@ -9,6 +9,7 @@ body{
     background:#f6f3ee;
     color:#2d2d2d;
     line-height:1.6;
+    scroll-behavior:smooth;
 }
 
 header{
@@ -130,13 +131,25 @@ header{
 .btn:hover{
     transform:scale(1.05);
 }
+
 .navbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:20px 40px;
-}
+    padding:18px 40px;
 
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+
+    background:rgba(58,39,24,0.92);
+    backdrop-filter:blur(10px);
+
+    z-index:1000;
+
+    box-sizing:border-box;
+}
 .nav-links{
     display:flex;
     list-style:none;
@@ -150,8 +163,31 @@ header{
     transition:0.3s;
 }
 
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.3s;
+    position:relative;
+}
+
 .nav-links a:hover{
     color:#d4a373;
+}
+
+.nav-links a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-6px;
+    width:0;
+    height:2px;
+    background:#d4a373;
+    transition:0.3s;
+}
+
+.nav-links a:hover::after{
+    width:100%;
 }
 
 .logo{
@@ -227,6 +263,7 @@ header{
     height:600px;
     object-fit:cover;
     display:block;
+    padding-top:90px;
 }
 
 .hero-text {
@@ -410,6 +447,54 @@ nav ul{
 .footer{
     padding:30px 15px;
 }
+.etsy-btn{
+    background:#b07a4f;
+    color:white !important;
+    padding:10px 18px;
+    border-radius:8px;
+    transition:0.3s;
+}
 
+.etsy-btn:hover{
+    background:#d4a373;
+    color:white !important;
+}
+@media (max-width:768px){
+
+    .navbar{
+        flex-direction:column;
+        padding:15px;
+    }
+
+    .nav-links{
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:15px;
+        margin-top:15px;
+    }
+
+    .hero h1{
+        font-size:38px;
+    }
+
+    .hero p{
+        font-size:18px;
+    }
+
+    .products{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .card{
+        width:90%;
+        max-width:360px;
+    }
+
+    .contact-links{
+        flex-direction:column;
+        align-items:center;
+    }
+}
 }
 
