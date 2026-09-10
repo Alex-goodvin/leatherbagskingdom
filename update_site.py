@@ -1,3 +1,4 @@
+
 from pathlib import Path
 from openpyxl import load_workbook
 from urllib.parse import urlparse
@@ -21,7 +22,6 @@ import shutil
 #
 # SOLD products are not displayed.
 # Short Description is taken from Excel.
-# Alt Text is taken from Excel.
 # ============================================================
 
 
@@ -31,6 +31,26 @@ EXCEL_FILE = BASE_DIR / "goods(4).xlsx"
 HTML_FILE = BASE_DIR / "index.html"
 
 
+# ============================================================
+# SEO SETTINGS
+# ============================================================
+
+SITE_TITLE = "Handmade Leather EDC Belt Pouch & Leather Goods | LeatherBagsKingdom"
+SITE_DESCRIPTION = (
+    "Handmade leather EDC belt pouches, wallets, belts and bags "
+    "by Alex Polak. Designed for everyday carry and crafted "
+    "from premium Italian leather."
+)
+SITE_H1 = "Handmade Leather EDC Belt Pouch & Leather Goods"
+EDC_SEO_TITLE = "Everyday Carry, Made from Leather"
+EDC_SEO_TEXT = (
+    "Handmade leather EDC belt pouches designed for practical everyday carry. "
+    "Each pouch is crafted to keep your essential tools and everyday items secure, "
+    "accessible and close at hand. Our leather EDC pouches are made with durability "
+    "and functionality in mind, including designs for multitools, cards, coins, keys "
+    "and other everyday essentials. Handmade by Alex Polak from premium leather."
+)
+
 CATEGORIES = [
     "Bags",
     "Wallets",
@@ -38,19 +58,16 @@ CATEGORIES = [
     "EDC"
 ]
 
-
 VALID_STATUSES = {
     "ACTIVE",
     "NEW",
     "SOLD"
 }
 
-
 DISPLAY_STATUSES = {
     "ACTIVE",
     "NEW"
 }
-
 
 REQUIRED_HEADERS = [
     "Category",
@@ -73,12 +90,10 @@ def print_line():
 
 
 def is_valid_url(value):
-
     if not isinstance(value, str) or not value.strip():
         return False
 
     try:
-
         parsed = urlparse(value)
 
         return (
@@ -109,25 +124,17 @@ def is_safe_image_path(image):
     if ".." in path.parts:
         return False
 
-    full_path = (
-        BASE_DIR / path
-    ).resolve()
+    full_path = (BASE_DIR / path).resolve()
 
     try:
-
-        full_path.relative_to(
-            BASE_DIR.resolve()
-        )
-
+        full_path.relative_to(BASE_DIR.resolve())
     except ValueError:
-
         return False
 
     return True
 
 
 def get_backup_path():
-
     timestamp = datetime.now().strftime(
         "%Y%m%d_%H%M%S"
     )
@@ -148,8 +155,7 @@ def read_excel():
     if not EXCEL_FILE.exists():
 
         errors.append(
-            f"Excel file not found: "
-            f"{EXCEL_FILE.name}"
+            f"Excel file not found: {EXCEL_FILE.name}"
         )
 
         return [], errors
@@ -169,24 +175,10 @@ def read_excel():
 
         return [], errors
 
-
-    # Use Лист2 if it exists.
-    # Otherwise use the first worksheet.
-
     if "Лист2" in workbook.sheetnames:
-
         sheet = workbook["Лист2"]
-
     else:
-
-        sheet = workbook[
-            workbook.sheetnames[0]
-        ]
-
-
-    # --------------------------------------------------------
-    # READ HEADERS
-    # --------------------------------------------------------
+        sheet = workbook[workbook.sheetnames[0]]
 
     headers = []
 
@@ -200,64 +192,31 @@ def read_excel():
 
         headers.append(value)
 
-
-    # Remove empty headers at the end.
-
-    while (
-        headers
-        and headers[-1] == ""
-    ):
-
+    while headers and headers[-1] == "":
         headers.pop()
 
-
-    # --------------------------------------------------------
-    # CHECK REQUIRED HEADERS
-    # --------------------------------------------------------
-
     missing_headers = [
-
-        header
-
-        for header in REQUIRED_HEADERS
-
-        if header not in headers
-
+        h
+        for h in REQUIRED_HEADERS
+        if h not in headers
     ]
-
 
     if missing_headers:
 
         for header in missing_headers:
 
             errors.append(
-                f"Missing required column: "
-                f"{header}"
+                f"Missing required column: {header}"
             )
 
         return [], errors
 
-
-    # --------------------------------------------------------
-    # CREATE COLUMN INDEX
-    # --------------------------------------------------------
-
     column_index = {
-
         name: index
-
-        for index, name
-        in enumerate(headers)
-
+        for index, name in enumerate(headers)
     }
 
-
     products = []
-
-
-    # --------------------------------------------------------
-    # READ PRODUCTS
-    # --------------------------------------------------------
 
     for row_number in range(
         2,
@@ -265,98 +224,65 @@ def read_excel():
     ):
 
         values = [
-
             sheet.cell(
                 row_number,
                 column_index[name] + 1
             ).value
-
             for name in headers
-
         ]
 
-
-        # Skip completely empty rows.
-
         if all(
-
             value is None
             or str(value).strip() == ""
-
             for value in values
-
         ):
-
             continue
-
 
         def get(name):
 
-            value = values[
-                column_index[name]
-            ]
+            value = values[column_index[name]]
 
             if value is None:
-
                 return ""
 
-            return str(
-                value
-            ).strip()
-
+            return str(value).strip()
 
         product = {
 
-            "row":
-                row_number,
+            "row": row_number,
 
-            "category":
-                get("Category"),
+            "category": get("Category"),
 
-            "name":
-                get("Product"),
+            "name": get("Product"),
 
             "short_description":
                 get("Short Description"),
 
-            "etsy_url":
-                get("Etsy URL"),
+            "etsy_url": get("Etsy URL"),
 
-            "image":
-                get("Image"),
+            "image": get("Image"),
 
-            "alt_text":
-                get("Alt Text"),
+            "alt_text": get("Alt Text"),
 
-            "status":
-                get("Status").upper(),
+            "status": get("Status").upper(),
 
-            "featured":
-                get("Featured").upper()
+            "featured": get("Featured").upper()
 
         }
 
-
-        products.append(
-            product
-        )
-
+        products.append(product)
 
         # ----------------------------------------------------
         # VALIDATION
         # ----------------------------------------------------
 
-        if (
-            product["category"]
-            not in CATEGORIES
-        ):
+        if product["category"] not in CATEGORIES:
 
             errors.append(
                 f"Row {row_number}: "
                 f"unknown category "
                 f"'{product['category']}'"
             )
-
 
         if not product["name"]:
 
@@ -365,16 +291,12 @@ def read_excel():
                 f"Product is empty"
             )
 
-
-        if not product[
-            "short_description"
-        ]:
+        if not product["short_description"]:
 
             errors.append(
                 f"Row {row_number}: "
                 f"Short Description is empty"
             )
-
 
         if not is_valid_url(
             product["etsy_url"]
@@ -384,7 +306,6 @@ def read_excel():
                 f"Row {row_number}: "
                 f"invalid Etsy URL"
             )
-
 
         if not product["image"]:
 
@@ -403,19 +324,13 @@ def read_excel():
                 f"'{product['image']}'"
             )
 
-
         if not product["alt_text"]:
 
             errors.append(
-                f"Row {row_number}: "
-                f"Alt Text is empty"
+                f"Row {row_number}: Alt Text is empty"
             )
 
-
-        if (
-            product["status"]
-            not in VALID_STATUSES
-        ):
+        if product["status"] not in VALID_STATUSES:
 
             errors.append(
                 f"Row {row_number}: "
@@ -423,20 +338,15 @@ def read_excel():
                 f"'{product['status']}'"
             )
 
-
-        if (
-            product["featured"]
-            not in {
-                "YES",
-                "NO"
-            }
-        ):
+        if product["featured"] not in {
+            "YES",
+            "NO"
+        }:
 
             errors.append(
                 f"Row {row_number}: "
                 f"Featured must be YES or NO"
             )
-
 
     return products, errors
 
@@ -449,14 +359,12 @@ def validate_images(products):
 
     errors = []
 
-
     for product in products:
 
         image_path = (
             BASE_DIR /
             product["image"]
         )
-
 
         if not image_path.exists():
 
@@ -466,7 +374,6 @@ def validate_images(products):
                 f"{product['image']}"
             )
 
-
         elif not image_path.is_file():
 
             errors.append(
@@ -474,7 +381,6 @@ def validate_images(products):
                 f"image path is not a file: "
                 f"{product['image']}"
             )
-
 
     return errors
 
@@ -489,7 +395,6 @@ def get_featured_products(products):
 
     featured_products = []
 
-
     for category in CATEGORIES:
 
         candidates = [
@@ -499,24 +404,15 @@ def get_featured_products(products):
             for product in products
 
             if (
-
-                product["category"]
-                == category
-
+                product["category"] == category
                 and
-
                 product["status"]
                 in DISPLAY_STATUSES
-
                 and
-
-                product["featured"]
-                == "YES"
-
+                product["featured"] == "YES"
             )
 
         ]
-
 
         if len(candidates) == 0:
 
@@ -524,7 +420,6 @@ def get_featured_products(products):
                 f"{category}: "
                 f"no Featured product"
             )
-
 
         elif len(candidates) > 1:
 
@@ -534,18 +429,13 @@ def get_featured_products(products):
                 f"Featured products found"
             )
 
-
         else:
 
             featured_products.append(
                 candidates[0]
             )
 
-
-    return (
-        featured_products,
-        errors
-    )
+    return featured_products, errors
 
 
 # ============================================================
@@ -558,29 +448,24 @@ def build_product_card(product):
         product["name"]
     )
 
-
     description = escape(
         product["short_description"]
     )
-
 
     image = escape(
         product["image"],
         quote=True
     )
 
-
     alt_text = escape(
         product["alt_text"],
         quote=True
     )
 
-
     url = escape(
         product["etsy_url"],
         quote=True
     )
-
 
     return f'''<div class="card">
 
@@ -620,23 +505,17 @@ def build_products_block(products):
 
 </div>'''
 
-
     cards = []
-
 
     for product in products:
 
         cards.append(
-            build_product_card(
-                product
-            )
+            build_product_card(product)
         )
-
 
     cards_text = "\n\n\n".join(
         cards
     )
-
 
     return f'''<div class="products">
 
@@ -660,47 +539,30 @@ def replace_marker_block(
         start_marker
     )
 
-
     end = html.find(
         end_marker
     )
 
-
     if start == -1:
-
         return None
-
 
     if end == -1:
-
         return None
-
 
     if end <= start:
-
         return None
 
-
     content_start = (
-        start +
-        len(start_marker)
+        start + len(start_marker)
     )
-
 
     new_html = (
-
         html[:content_start]
-
         + "\n\n"
-
         + new_content
-
         + "\n\n"
-
         + html[end:]
-
     )
-
 
     return new_html
 
@@ -727,37 +589,27 @@ def main():
 
     print()
 
-
     # --------------------------------------------------------
     # STEP 1
     # --------------------------------------------------------
 
-    print(
-        "STEP 1 - FILE CHECK"
-    )
+    print("STEP 1 - FILE CHECK")
 
     print_line()
 
-
     print(
-        f"Project folder : "
-        f"{BASE_DIR}"
+        f"Project folder : {BASE_DIR}"
     )
 
-
     print(
-        f"Excel file     : "
-        f"{EXCEL_FILE.name}"
+        f"Excel file     : {EXCEL_FILE.name}"
     )
 
-
     print(
-        f"Website file   : "
-        f"{HTML_FILE.name}"
+        f"Website file   : {HTML_FILE.name}"
     )
 
     print()
-
 
     if not EXCEL_FILE.exists():
 
@@ -771,7 +623,6 @@ def main():
 
         return
 
-
     if not HTML_FILE.exists():
 
         print(
@@ -780,61 +631,47 @@ def main():
 
         return
 
-
     print(
         "OK - required files found."
     )
 
     print()
 
-
     # --------------------------------------------------------
     # STEP 2
     # --------------------------------------------------------
 
-    print(
-        "STEP 2 - READ EXCEL"
-    )
+    print("STEP 2 - READ EXCEL")
 
     print_line()
 
-
     products, errors = read_excel()
 
-
     print(
-        f"Products found: "
-        f"{len(products)}"
+        f"Products found: {len(products)}"
     )
 
     print()
 
-
     if errors:
 
         print(
-            f"ERRORS FOUND: "
-            f"{len(errors)}"
+            f"ERRORS FOUND: {len(errors)}"
         )
-
 
         for error in errors:
 
             print(
-                f"  ERROR: "
-                f"{error}"
+                f"  ERROR: {error}"
             )
 
-
         print()
-
 
         print(
             "STOP: Website will NOT be changed."
         )
 
         return
-
 
     print(
         "Excel structure and data: OK"
@@ -842,109 +679,70 @@ def main():
 
     print()
 
-
     # --------------------------------------------------------
     # STEP 3
     # --------------------------------------------------------
 
-    print(
-        "STEP 3 - PRODUCT STATUS"
-    )
+    print("STEP 3 - PRODUCT STATUS")
 
     print_line()
 
-
     active = [
-
-        product
-
-        for product in products
-
-        if product["status"]
-        == "ACTIVE"
-
+        p for p in products
+        if p["status"] == "ACTIVE"
     ]
-
 
     new = [
-
-        product
-
-        for product in products
-
-        if product["status"]
-        == "NEW"
-
+        p for p in products
+        if p["status"] == "NEW"
     ]
-
 
     sold = [
-
-        product
-
-        for product in products
-
-        if product["status"]
-        == "SOLD"
-
+        p for p in products
+        if p["status"] == "SOLD"
     ]
 
-
     print(
-        f"ACTIVE : "
-        f"{len(active)}"
+        f"ACTIVE : {len(active)}"
     )
 
-
     print(
-        f"NEW    : "
-        f"{len(new)}"
+        f"NEW    : {len(new)}"
     )
 
-
     print(
-        f"SOLD   : "
-        f"{len(sold)}"
+        f"SOLD   : {len(sold)}"
     )
 
     print()
-
 
     # --------------------------------------------------------
     # STEP 4
     # --------------------------------------------------------
 
-    print(
-        "STEP 4 - IMAGE CHECK"
-    )
+    print("STEP 4 - IMAGE CHECK")
 
     print_line()
-
 
     image_errors = validate_images(
         products
     )
-
 
     if image_errors:
 
         for error in image_errors:
 
             print(
-                f"ERROR: "
-                f"{error}"
+                f"ERROR: {error}"
             )
 
-
         print()
-
 
         print(
             "STOP: Website will NOT be changed."
         )
 
         return
-
 
     print(
         f"OK - all {len(products)} "
@@ -953,38 +751,27 @@ def main():
 
     print()
 
-
     # --------------------------------------------------------
     # STEP 5
     # --------------------------------------------------------
 
-    print(
-        "STEP 5 - FEATURED PRODUCTS"
-    )
+    print("STEP 5 - FEATURED PRODUCTS")
 
     print_line()
 
-
-    (
-        featured_products,
-        featured_errors
-    ) = get_featured_products(
-        products
+    featured_products, featured_errors = (
+        get_featured_products(products)
     )
-
 
     if featured_errors:
 
         for error in featured_errors:
 
             print(
-                f"ERROR: "
-                f"{error}"
+                f"ERROR: {error}"
             )
 
-
         print()
-
 
         print(
             "STOP: Website will NOT be changed."
@@ -992,89 +779,64 @@ def main():
 
         return
 
-
     for product in featured_products:
 
         print(
             f"OK  {product['category']}:"
         )
 
-
         print(
             f"    {product['name']}"
         )
 
-
         print(
-            f"    Alt Text: "
-            f"{product['alt_text']}"
+            f"    Description: "
+            f"{product['short_description']}"
         )
 
         print()
-
 
     # --------------------------------------------------------
     # STEP 6
     # --------------------------------------------------------
 
-    print(
-        "STEP 6 - CATEGORY PRODUCTS"
-    )
+    print("STEP 6 - CATEGORY PRODUCTS")
 
     print_line()
 
-
     category_products = {}
-
 
     for category in CATEGORIES:
 
         items = [
 
-            product
+            p
 
-            for product in products
+            for p in products
 
             if (
-
-                product["category"]
-                == category
-
+                p["category"] == category
                 and
-
-                product["status"]
+                p["status"]
                 in DISPLAY_STATUSES
-
             )
 
         ]
-
 
         category_products[
             category
         ] = items
 
-
         print(
-            f"{category}: "
-            f"{len(items)} products"
+            f"{category}: {len(items)} products"
         )
-
 
         for product in items:
 
             marker = ""
 
-
-            if (
-                product["featured"]
-                == "YES"
-            ):
-
-                marker = (
-                    " ★ FEATURED"
-                )
-
+            if product["featured"] == "YES":
+                marker = " ★ FEATURED"
 
             print(
                 f"    [{product['row']}] "
@@ -1082,27 +844,21 @@ def main():
                 f"{marker}"
             )
 
-
         print()
-
 
     # --------------------------------------------------------
     # STEP 7
     # --------------------------------------------------------
 
-    print(
-        "STEP 7 - READ WEBSITE"
-    )
+    print("STEP 7 - READ WEBSITE")
 
     print_line()
-
 
     try:
 
         html = HTML_FILE.read_text(
             encoding="utf-8"
         )
-
 
     except Exception as e:
 
@@ -1113,13 +869,81 @@ def main():
 
         return
 
-
     print(
         "OK - index.html loaded."
     )
 
     print()
 
+    # --------------------------------------------------------
+    # SEO UPDATE
+    # --------------------------------------------------------
+
+    updated = replace_marker_block(
+        html,
+        "<!-- SEO_TITLE_START -->",
+        "<!-- SEO_TITLE_END -->",
+        f"<title>{escape(SITE_TITLE)}</title>"
+    )
+
+    if updated is None:
+        print("ERROR: Could not find SEO title markers.")
+        print("STOP: Website will NOT be changed.")
+        return
+
+    html = updated
+
+    updated = replace_marker_block(
+        html,
+        "<!-- SEO_DESCRIPTION_START -->",
+        "<!-- SEO_DESCRIPTION_END -->",
+        f'<meta name="description" content="{escape(SITE_DESCRIPTION)}">'
+    )
+
+    if updated is None:
+        print("ERROR: Could not find SEO description markers.")
+        print("STOP: Website will NOT be changed.")
+        return
+
+    html = updated
+
+    updated = replace_marker_block(
+        html,
+        "<!-- H1_START -->",
+        "<!-- H1_END -->",
+        f"<h1>{escape(SITE_H1)}</h1>"
+    )
+
+    if updated is None:
+        print("ERROR: Could not find H1 markers.")
+        print("STOP: Website will NOT be changed.")
+        return
+
+    html = updated
+
+    edc_seo_html = (
+        '<div class="category-seo">\n\n'
+        f'    <h3>{escape(EDC_SEO_TITLE)}</h3>\n\n'
+        f'    <p>\n        {escape(EDC_SEO_TEXT)}\n    </p>\n\n'
+        '</div>'
+    )
+
+    updated = replace_marker_block(
+        html,
+        "<!-- EDC_SEO_START -->",
+        "<!-- EDC_SEO_END -->",
+        edc_seo_html
+    )
+
+    if updated is None:
+        print("ERROR: Could not find EDC SEO markers.")
+        print("STOP: Website will NOT be changed.")
+        return
+
+    html = updated
+
+    print("OK - SEO blocks prepared.")
+    print()
 
     # --------------------------------------------------------
     # STEP 8
@@ -1131,110 +955,64 @@ def main():
 
     print_line()
 
-
     replacements = {
 
-
         "Featured": (
-
             "<!-- PRODUCTS_START -->",
-
             "<!-- PRODUCTS_END -->",
-
             build_products_block(
                 featured_products
             )
-
         ),
-
 
         "Bags": (
-
             "<!-- BAGS_START -->",
-
             "<!-- BAGS_END -->",
-
             build_products_block(
-                category_products[
-                    "Bags"
-                ]
+                category_products["Bags"]
             )
-
         ),
-
 
         "Wallets": (
-
             "<!-- WALLETS_START -->",
-
             "<!-- WALLETS_END -->",
-
             build_products_block(
-                category_products[
-                    "Wallets"
-                ]
+                category_products["Wallets"]
             )
-
         ),
-
 
         "Belts": (
-
             "<!-- BELTS_START -->",
-
             "<!-- BELTS_END -->",
-
             build_products_block(
-                category_products[
-                    "Belts"
-                ]
+                category_products["Belts"]
             )
-
         ),
 
-
         "EDC": (
-
             "<!-- EDC_START -->",
-
             "<!-- EDC_END -->",
-
             build_products_block(
-                category_products[
-                    "EDC"
-                ]
+                category_products["EDC"]
             )
-
         )
 
     }
 
-
     new_html = html
 
-
-    for (
-        section,
-        (
-            start_marker,
-            end_marker,
-            content
-        )
+    for section, (
+        start_marker,
+        end_marker,
+        content
     ) in replacements.items():
 
-
         updated = replace_marker_block(
-
             new_html,
-
             start_marker,
-
             end_marker,
-
             content
-
         )
-
 
         if updated is None:
 
@@ -1243,20 +1021,15 @@ def main():
                 f"{section} markers."
             )
 
-
             print(
-                f"  Start: "
-                f"{start_marker}"
+                f"  Start: {start_marker}"
             )
 
-
             print(
-                f"  End:   "
-                f"{end_marker}"
+                f"  End:   {end_marker}"
             )
 
             print()
-
 
             print(
                 "STOP: Website will NOT be changed."
@@ -1264,18 +1037,13 @@ def main():
 
             return
 
-
         new_html = updated
 
-
         print(
-            f"OK - {section} "
-            f"block prepared."
+            f"OK - {section} block prepared."
         )
 
-
     print()
-
 
     # --------------------------------------------------------
     # STEP 9
@@ -1287,13 +1055,11 @@ def main():
             "No changes required."
         )
 
-
         print(
             "Website already matches Excel."
         )
 
         return
-
 
     print(
         "STEP 9 - CREATE BACKUP"
@@ -1301,28 +1067,20 @@ def main():
 
     print_line()
 
-
     backup_file = get_backup_path()
-
 
     try:
 
         shutil.copy2(
-
             HTML_FILE,
-
             backup_file
-
         )
-
 
     except Exception as e:
 
         print(
-            f"ERROR: Could not create "
-            f"backup: {e}"
+            f"ERROR: Could not create backup: {e}"
         )
-
 
         print(
             "STOP: Website will NOT be changed."
@@ -1330,18 +1088,15 @@ def main():
 
         return
 
-
     print(
         "Backup created:"
     )
-
 
     print(
         f"  {backup_file.name}"
     )
 
     print()
-
 
     # --------------------------------------------------------
     # STEP 10
@@ -1353,17 +1108,12 @@ def main():
 
     print_line()
 
-
     try:
 
         HTML_FILE.write_text(
-
             new_html,
-
             encoding="utf-8"
-
         )
-
 
     except Exception as e:
 
@@ -1374,7 +1124,6 @@ def main():
 
         print()
 
-
         print(
             "Original website is preserved "
             "in the backup."
@@ -1382,13 +1131,11 @@ def main():
 
         return
 
-
     print(
         "SUCCESS - index.html updated."
     )
 
     print()
-
 
     # --------------------------------------------------------
     # FINAL REPORT
@@ -1404,11 +1151,9 @@ def main():
 
     print()
 
-
     print(
         "FEATURED COLLECTIONS:"
     )
-
 
     for product in featured_products:
 
@@ -1417,87 +1162,55 @@ def main():
             f"{product['name']}"
         )
 
-
     print()
-
 
     print(
         "CATEGORY TOTALS:"
     )
 
-
     for category in CATEGORIES:
 
         count = len(
-            category_products[
-                category
-            ]
+            category_products[category]
         )
-
 
         print(
-            f"  {category}: "
-            f"{count}"
+            f"  {category}: {count}"
         )
-
 
     print()
-
-
-    total_products = sum(
-
-        len(
-            category_products[
-                category
-            ]
-        )
-
-        for category in CATEGORIES
-
-    )
-
 
     print(
         f"TOTAL PRODUCTS ON WEBSITE: "
-        f"{total_products}"
+        f"{sum(len(category_products[c]) for c in CATEGORIES)}"
     )
 
     print()
 
+    if sold:
 
-    print(
-        f"SOLD PRODUCTS NOT DISPLAYED: "
-        f"{len(sold)}"
-    )
+        print(
+            f"SOLD PRODUCTS NOT DISPLAYED: "
+            f"{len(sold)}"
+        )
 
-    print()
+    else:
 
-
-    print(
-        "ALT TEXT:"
-    )
-
-
-    print(
-        f"  {total_products} website "
-        f"product images use Alt Text "
-        f"from Excel."
-    )
+        print(
+            "SOLD PRODUCTS NOT DISPLAYED: 0"
+        )
 
     print()
-
 
     print(
         "Backup:"
     )
-
 
     print(
         f"  {backup_file.name}"
     )
 
     print()
-
 
     print(
         "The website is now synchronized "
