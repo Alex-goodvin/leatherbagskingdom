@@ -486,7 +486,7 @@ def build_product_card(product):
        href="{url}"
        target="_blank"
        rel="noopener">
-       View Product
+       Buy on Etsy
     </a>
 
 </div>'''
