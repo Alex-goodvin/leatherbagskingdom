@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from html import escape
 from datetime import datetime
 import shutil
+import json
 
 
 # ============================================================
@@ -523,6 +524,54 @@ def build_products_block(products):
 
 </div>'''
 
+# ============================================================
+# BUILD PRODUCT JSON-LD
+# ============================================================
+
+def build_product_json_ld(products):
+
+    schema_products = []
+
+    for product in products:
+
+        image_url = (
+            "https://leatherbagskingdom.com/"
+            + product["image"].lstrip("/")
+        )
+
+        schema_product = {
+            "@type": "Product",
+            "name": product["name"],
+            "description": product["short_description"],
+            "image": image_url,
+            "url": product["etsy_url"],
+            "brand": {
+                "@type": "Brand",
+                "name": "LeatherBagsKingdom"
+            }
+        }
+
+        schema_products.append(
+            schema_product
+        )
+
+    schema = {
+        "@context": "https://schema.org",
+        "@graph": schema_products
+    }
+
+    json_text = json.dumps(
+        schema,
+        ensure_ascii=False,
+        indent=4
+    )
+
+    return (
+        '<script type="application/ld+json">\n'
+        + json_text
+        + '\n</script>'
+    )
+
 
 # ============================================================
 # REPLACE MARKER BLOCK
@@ -702,6 +751,11 @@ def main():
         if p["status"] == "SOLD"
     ]
 
+    schema_products = [
+        p for p in products
+        if p["status"] in DISPLAY_STATUSES
+    ]
+    
     print(
         f"ACTIVE : {len(active)}"
     )
@@ -719,6 +773,10 @@ def main():
     # --------------------------------------------------------
     # STEP 4
     # --------------------------------------------------------
+
+    product_json_ld = build_product_json_ld(
+    schema_products
+     )
 
     print("STEP 4 - IMAGE CHECK")
 
@@ -942,6 +1000,8 @@ def main():
 
     html = updated
 
+   
+
     print("OK - SEO blocks prepared.")
     print()
 
@@ -987,6 +1047,12 @@ def main():
             build_products_block(
                 category_products["Belts"]
             )
+        ),
+
+        "Product JSON-LD": (
+            "<!-- PRODUCT JSON-LD START -->",
+            "<!-- PRODUCT JSON-LD END -->",
+            product_json_ld
         ),
 
         "EDC": (
@@ -1048,7 +1114,8 @@ def main():
     # --------------------------------------------------------
     # STEP 9
     # --------------------------------------------------------
-
+   
+    
     if new_html == html:
 
         print(
