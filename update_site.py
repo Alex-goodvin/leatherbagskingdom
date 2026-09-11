@@ -78,9 +78,10 @@ REQUIRED_HEADERS = [
     "Image",
     "Alt Text",
     "Status",
-    "Featured"
+    "Featured",
+    "Price",
+    "Currency"
 ]
-
 
 # ============================================================
 # HELPERS
@@ -267,7 +268,11 @@ def read_excel():
 
             "status": get("Status").upper(),
 
-            "featured": get("Featured").upper()
+            "featured": get("Featured").upper(),
+
+            "price": get("Price"),
+
+            "currency": get("Currency").upper()
 
         }
 
@@ -545,6 +550,13 @@ def build_product_json_ld(products):
             "description": product["short_description"],
             "image": image_url,
             "url": product["etsy_url"],
+            "offers": {
+              "@type": "Offer",
+              "price": str(product["price"]),
+              "priceCurrency": product["currency"],
+              "availability": "https://schema.org/InStock",
+               "url": product["etsy_url"]
+            },
             "brand": {
                 "@type": "Brand",
                 "name": "LeatherBagsKingdom"
