@@ -30,6 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 EXCEL_FILE = BASE_DIR / "goods(4).xlsx"
 HTML_FILE = BASE_DIR / "index.html"
+AI_RESULTS_DIR = BASE_DIR / "ai_results"
 
 
 # ============================================================
@@ -145,6 +146,151 @@ def get_backup_path():
         f"index_backup_{timestamp}.html"
     )
 
+def get_listing_id(etsy_url):
+
+    try:
+
+        parsed = urlparse(
+            etsy_url.strip()
+        )
+
+        parts = [
+            part
+            for part in parsed.path.split("/")
+            if part
+        ]
+
+        if (
+            "listing" in parts
+            and
+            parts.index("listing") + 1
+            < len(parts)
+        ):
+
+            return parts[
+                parts.index("listing") + 1
+            ]
+
+    except Exception:
+        pass
+
+    return ""
+
+# ============================================================
+# AI RESULTS
+# ============================================================
+
+def load_ai_result(listing_id):
+
+    ai_file = (
+        AI_RESULTS_DIR /
+        f"{listing_id}.json"
+    )
+
+    if not ai_file.exists():
+        return None, (
+            f"AI result not found: "
+            f"{ai_file.name}"
+        )
+
+    try:
+
+        data = json.loads(
+            ai_file.read_text(
+                encoding="utf-8"
+            )
+        )
+
+    except Exception as e:
+
+        return None, (
+            f"Could not read AI result "
+            f"{ai_file.name}: {e}"
+        )
+
+    if not isinstance(data, dict):
+
+        return None, (
+            f"Invalid AI result format: "
+            f"{ai_file.name}"
+        )
+
+    if "ai_result" not in data:
+
+        return None, (
+            f"Missing ai_result in: "
+            f"{ai_file.name}"
+        )
+
+    return data["ai_result"], None
+
+def validate_ai_results(products):
+
+    errors = []
+
+    required_fields = [
+        "visual_observations",
+        "long_description",
+        "seo_title",
+        "meta_description",
+        "warnings"
+    ]
+
+    for product in products:
+
+        if product["status"] not in DISPLAY_STATUSES:
+            continue
+
+        listing_id = product["listing_id"]
+
+        if not listing_id:
+
+            errors.append(
+                f"Row {product['row']}: "
+                f"could not determine listing ID "
+                f"from Etsy URL"
+            )
+
+            continue
+
+        ai_result, error = load_ai_result(
+            listing_id
+        )
+
+        if error:
+
+            errors.append(
+                f"Row {product['row']}: "
+                f"{error}"
+            )
+
+            continue
+
+        if not isinstance(
+            ai_result,
+            dict
+        ):
+
+            errors.append(
+                f"Row {product['row']}: "
+                f"invalid ai_result format "
+                f"for listing {listing_id}"
+            )
+
+            continue
+
+        for field in required_fields:
+
+            if field not in ai_result:
+
+                errors.append(
+                    f"Row {product['row']}: "
+                    f"missing AI field "
+                    f"'{field}' "
+                    f"for listing {listing_id}"
+                )
+
+    return errors
 
 # ============================================================
 # READ EXCEL
@@ -252,6 +398,10 @@ def read_excel():
         product = {
 
             "row": row_number,
+
+            "listing_id": get_listing_id(
+             get("Etsy URL")
+            ),
 
             "category": get("Category"),
 
@@ -473,6 +623,9 @@ def build_product_card(product):
         quote=True
     )
 
+    listing_id = product["listing_id"]
+    product_page_url = f"products/{listing_id}.html"
+
     return f'''<div class="card">
 
     <img src="{image}"
@@ -488,14 +641,11 @@ def build_product_card(product):
     </p>
 
     <a class="btn"
-       href="{url}"
-       target="_blank"
-       rel="noopener">
-       Buy on Etsy
+       href="{product_page_url}">
+       View Product
     </a>
 
 </div>'''
-
 
 # ============================================================
 # BUILD PRODUCTS
@@ -736,6 +886,45 @@ def main():
 
     print(
         "Excel structure and data: OK"
+    )
+
+    print()
+
+    # --------------------------------------------------------
+    # STEP 3
+    # --------------------------------------------------------
+
+    print("STEP 3 - AI RESULTS CHECK")
+
+    print_line()
+
+    ai_errors = validate_ai_results(
+        products
+    )
+
+    if ai_errors:
+
+        print(
+            f"AI ERRORS FOUND: {len(ai_errors)}"
+        )
+
+        for error in ai_errors:
+
+            print(
+                f"  ERROR: {error}"
+            )
+
+        print()
+
+        print(
+            "STOP: Website will NOT be changed."
+        )
+
+        return
+
+    print(
+        f"OK - AI results found for "
+        f"{len(products)} products."
     )
 
     print()
