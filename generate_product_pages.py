@@ -114,6 +114,7 @@ def load_ai_result(listing_id):
         "seo_title",
         "meta_description",
         "visual_observations",
+        "product_details",
         "warnings",
     ]
 
@@ -188,52 +189,16 @@ def build_description_html(long_description):
 
 
 def build_product_details(product, ai):
-    """
-    Product details currently come from the verified product page
-    where possible, while core data remains tied to Excel/AI.
-    """
+    details = ai.get("product_details", [])
 
-    description = ai["long_description"]
-
-    details = []
-
-    # These are intentionally conservative.
-    # We only use information already present in the generated content.
-
-    if "genuine leather" in description.lower():
-        details.append("Handmade genuine leather")
-
-    if "hand saddle stitching" in description.lower():
-        details.append("Hand saddle stitching")
-
-    if "lined interior" in description.lower():
-        details.append("Lined interior")
-
-    if "two pockets" in description.lower():
-        details.append("Two interior pockets")
-
-    if "YKK zipper" in description:
-        details.append("YKK zipper pocket")
-
-    if "key holder" in description.lower():
-        details.append("Dedicated key holder")
-
-    if "adjustable shoulder strap" in description.lower():
-        details.append("Adjustable shoulder strap")
-
-    # Extract known strap length from description
-    if "140 cm" in description:
-        details.append("Maximum strap length: 140 cm / 55.11 in")
-
-    # Extract known dimensions
-    if "21 cm × 17 cm × 6 cm" in description:
-        details.append("Dimensions: 21 × 17 × 6 cm")
+    if not isinstance(details, list):
+        return ""
 
     return "\n".join(
-        f"<li>{esc(item)}</li>"
+        f"<li>{esc(str(item))}</li>"
         for item in details
+        if str(item).strip()
     )
-
 
 def build_json_ld(product, ai, image_url, page_url):
     """Build Product JSON-LD."""

@@ -20,6 +20,11 @@
       "The written product details do not specify an exact leather color; the brown appearance is based on the product image.",
       "The image shows metal fasteners on the flap, but the closure type is not specified in the written product details.",
       "The belt and other items shown in the image are not confirmed as included with the pouch."
+    ],
+    "product_details": [
+      "Material: Vegetable-tanned leather",
+      "Dimensions: 100 × 100 × 45 mm",
+      "Belt compatibility: up to 50 mm"
     ]
   }
 }

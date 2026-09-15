@@ -19,6 +19,12 @@
     "warnings": [
       "Cards and banknotes shown in the product image are for illustration; included contents are not specified.",
       "The product is described as suitable for up to 5 cards; capacity may vary depending on card thickness."
+    ],
+    "product_details": [
+      "Material: Vegetable-tanned leather",
+      "Card capacity: up to 5 cards",
+      "Interior: 2 compartments",
+      "Construction: hand-sewn"
     ]
   }
 }

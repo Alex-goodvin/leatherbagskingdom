@@ -242,6 +242,7 @@ IMPORTANT RULES:
 Generate:
 
 - visual_observations
+- product_details
 - long_description
 - seo_title
 - meta_description
@@ -253,6 +254,16 @@ Generate:
 
 14. Preserve all numerical values exactly, but normalize the
     formatting of units, spacing and multiplication symbols.
+
+15. Create product_details as a concise list of confirmed product specifications.
+    Use only facts explicitly supported by the provided source text.
+    Do not infer specifications from the image.
+    Do not invent or estimate missing specifications.
+    Include useful measurable or functional details when available,
+    such as material, dimensions, thickness, width, capacity,
+    closure, hardware, stitching, belt compatibility, strap length,
+    number of pockets, holes or other confirmed construction details.
+    Do not include generic marketing claims.    
 """
 
 
@@ -272,7 +283,13 @@ SCHEMA = {
                 "type": "string"
             }
         },
+        "product_details": {
+            "type": "array",
 
+            "items": {
+                "type": "string"
+            }
+        },
         "long_description": {
             "type": "string"
         },
@@ -297,6 +314,7 @@ SCHEMA = {
 
     "required": [
         "visual_observations",
+        "product_details",
         "long_description",
         "seo_title",
         "meta_description",

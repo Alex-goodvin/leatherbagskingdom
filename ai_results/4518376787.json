@@ -18,6 +18,11 @@
     "warnings": [
       "The supplied original description refers to a wallet rather than a belt, so its wallet measurements of 4.3 in × 2.95 in (11 cm × 7.5 cm) are not included.",
       "The buckle appears warm-toned in the photograph, while the product information identifies it as silver; confirm the exact finish before publishing if color accuracy is critical."
+    ],
+    "product_details": [
+      "Material: Vegetable-tanned leather",
+      "Dimensions: 11 × 7.5 cm",
+      "Construction: hand-sewn"
     ]
   }
 }
