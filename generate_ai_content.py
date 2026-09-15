@@ -324,6 +324,156 @@ SCHEMA = {
     "additionalProperties": False
 }
 
+# ---------------------------------------------------------
+# AI RESULT VALIDATION
+# ---------------------------------------------------------
+
+def validate_ai_result(
+    result: dict
+) -> tuple[bool, str]:
+
+    if not isinstance(result, dict):
+        return False, "AI result is not a dictionary"
+
+
+    required_fields = [
+        "visual_observations",
+        "product_details",
+        "long_description",
+        "seo_title",
+        "meta_description",
+        "warnings",
+    ]
+
+
+    for field in required_fields:
+
+        if field not in result:
+
+            return (
+                False,
+                f"Missing required field: {field}"
+            )
+
+
+    list_fields = [
+        "visual_observations",
+        "product_details",
+        "warnings",
+    ]
+
+
+    for field in list_fields:
+
+        value = result[field]
+
+        if not isinstance(value, list):
+
+            return (
+                False,
+                f"{field} must be a list"
+            )
+
+
+        for item in value:
+
+            if not isinstance(item, str):
+
+                return (
+                    False,
+                    f"{field} contains non-string item"
+                )
+
+
+            if not item.strip():
+
+                return (
+                    False,
+                    f"{field} contains empty item"
+                )
+
+
+    text_fields = [
+        "long_description",
+        "seo_title",
+        "meta_description",
+    ]
+
+
+    for field in text_fields:
+
+        if not isinstance(
+            result[field],
+            str
+        ):
+
+            return (
+                False,
+                f"{field} must be a string"
+            )
+
+
+        if not result[field].strip():
+
+            return (
+                False,
+                f"{field} is empty"
+            )
+
+
+    # Detect accidental model/meta text.
+    suspicious_phrases = [
+        "product_details, [",
+        "visual_observations, [",
+        "i accidentally",
+        "wait malformed",
+        "let's construct",
+        "need to produce proper json",
+        "json keys exact",
+        "no unsupported",
+        "malformed json",
+    ]
+
+
+    for field in (
+        list_fields
+        + text_fields
+    ):
+
+        values = (
+
+            result[field]
+
+            if isinstance(
+                result[field],
+                list
+            )
+
+            else [result[field]]
+
+        )
+
+
+        for value in values:
+
+            lowered = value.lower()
+
+
+            for phrase in suspicious_phrases:
+
+                if phrase in lowered:
+
+                    return (
+
+                        False,
+
+                        "Suspicious AI/meta text "
+                        f"detected in {field}"
+
+                    )
+
+
+    return True, ""
 
 # ---------------------------------------------------------
 # 7. Generate with AI
@@ -452,8 +602,20 @@ def generate_with_ai(
         ) from exc
 
 
-    return result
+    valid, reason = validate_ai_result(
+        result
+    )
 
+
+    if not valid:
+
+        raise RuntimeError(
+            "OpenAI returned an invalid AI result:\n"
+            + reason
+        )
+
+
+    return result
 
 # ---------------------------------------------------------
 # 8. Read ACTIVE products from Excel
@@ -828,6 +990,26 @@ def process_product(
         )
 
 
+        cached_ai_result = cached.get(
+            "ai_result"
+        )
+
+
+        cached_valid = False
+
+
+        if isinstance(
+            cached_ai_result,
+            dict
+        ):
+
+            cached_valid, cached_reason = (
+                validate_ai_result(
+                    cached_ai_result
+                )
+            )
+
+
         if (
 
             cached_hash
@@ -835,12 +1017,7 @@ def process_product(
 
             and
 
-            isinstance(
-                cached.get(
-                    "ai_result"
-                ),
-                dict
-            )
+            cached_valid
 
         ):
 
