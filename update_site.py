@@ -32,6 +32,19 @@ EXCEL_FILE = BASE_DIR / "goods(4).xlsx"
 HTML_FILE = BASE_DIR / "index.html"
 AI_RESULTS_DIR = BASE_DIR / "ai_results"
 
+# ------------------------------------------------------------
+# GOOGLE ANALYTICS
+# ------------------------------------------------------------
+
+GOOGLE_ANALYTICS = """<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRRT7XLQ4K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('js', new Date());
+  gtag('config', 'G-VRRT7XLQ4K');
+</script>"""
 
 # ============================================================
 # SEO SETTINGS
@@ -1132,6 +1145,27 @@ def main():
         "OK - index.html loaded."
     )
 
+    print()
+
+    # --------------------------------------------------------
+    # GOOGLE ANALYTICS UPDATE
+    # --------------------------------------------------------
+
+    updated = replace_marker_block(
+        html,
+        "<!-- GOOGLE ANALYTICS START -->",
+        "<!-- GOOGLE ANALYTICS END -->",
+        GOOGLE_ANALYTICS
+    )
+
+    if updated is None:
+        print("ERROR: Could not find Google Analytics markers.")
+        print("STOP: Website will NOT be changed.")
+        return
+
+    html = updated
+
+    print("OK - Google Analytics block prepared.")
     print()
 
     # --------------------------------------------------------

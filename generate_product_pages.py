@@ -6,8 +6,8 @@ from openpyxl import load_workbook
 
 # ============================================================
 # LEATHERBAGSKINGDOM
-# Product Page Generator — TEST VERSION
-# Generates ONE product page only
+# Product Page Generator 
+# Generates product pages for all ACTIVE/NEW products
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -17,11 +17,18 @@ AI_RESULTS_DIR = BASE_DIR / "ai_results"
 PRODUCTS_DIR = BASE_DIR / "products"
 
 # ------------------------------------------------------------
-# TEST MODE
+# GOOGLE ANALYTICS
 # ------------------------------------------------------------
 
-TARGET_LISTING_ID = "1827745902"
+GOOGLE_ANALYTICS = """<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VRRT7XLQ4K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-VRRT7XLQ4K');
+</script>"""
 
 # ------------------------------------------------------------
 # Helpers
@@ -330,6 +337,7 @@ def build_product_page(product, ai_data):
     html_page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
+{GOOGLE_ANALYTICS}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -566,10 +574,14 @@ Price: {esc(price_display)}
 <a class="btn"
    href="{esc(etsy_url)}"
    target="_blank"
-   rel="noopener">
+   rel="noopener"
+   onclick="gtag('event', 'click_buy_on_etsy', {{
+       listing_id: '{esc(listing_id)}',
+       product_name: '{esc(product_name)}',
+       button_position: 'top'
+   }});">
 Buy on Etsy
 </a>
-
 </div>
 </div>
 
@@ -612,10 +624,14 @@ LeatherBagsKingdom Etsy shop.
 <a class="btn"
    href="{esc(etsy_url)}"
    target="_blank"
-   rel="noopener">
+   rel="noopener"
+   onclick="gtag('event', 'click_buy_on_etsy', {{
+       listing_id: '{esc(listing_id)}',
+       product_name: '{esc(product_name)}',
+       button_position: 'bottom'
+   }});">
 Buy on Etsy
 </a>
-
 </div>
 
 </section>
