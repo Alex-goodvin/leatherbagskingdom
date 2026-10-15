@@ -5,3 +5,6 @@ __pycache__/
 ai_test_result.json
 test_ai_product.py
 test_ai_product_from_excel.py
+worker/
+.wrangler/
+~$*

@@ -1,0 +1,33 @@
+.buy-now-wrap { margin-top: 14px; }
+.buy-now-wrap .btn { cursor: pointer; }
+
+.wb-fab { position: fixed; right: 18px; bottom: 18px; z-index: 9998; padding: 12px 18px; border: 0; border-radius: 999px; background: #222; color: #fff; font: 600 15px system-ui, sans-serif; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+.wb-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 9998; }
+.wb-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100vw); background: #fff; color: #222; z-index: 9999; display: flex; flex-direction: column; overflow-y: auto; box-shadow: -4px 0 20px rgba(0,0,0,.25); font: 15px/1.4 system-ui, sans-serif; }
+.wb-drawer[hidden], .wb-overlay[hidden], .wb-fab[hidden] { display: none; }
+
+.wb-head { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #fff; border-bottom: 1px solid #e5e5e5; font-size: 18px; }
+.wb-close { border: 0; background: none; font-size: 28px; line-height: 1; cursor: pointer; color: #222; }
+.wb-items, .wb-form { padding: 14px 18px; }
+.wb-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #eee; }
+.wb-row img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; }
+.wb-info { flex: 1; min-width: 0; }
+.wb-name { font-weight: 600; font-size: 14px; }
+.wb-qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.wb-qty button { width: 28px; height: 28px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
+.wb-qty .wb-rm { width: auto; padding: 0 8px; margin-left: auto; font-size: 13px; }
+
+.wb-form h3 { margin: 16px 0 8px; font-size: 15px; }
+.wb-form input, .wb-form select { width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font: inherit; background: #fff; color: #222; }
+.wb-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.wb-methods { border: 0; padding: 0; margin: 0; }
+.wb-methods label { display: flex; align-items: center; gap: 8px; padding: 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; }
+.wb-methods input { width: auto; margin: 0; }
+
+.wb-totals { margin: 14px 0; }
+.wb-trow { display: flex; justify-content: space-between; padding: 3px 0; }
+.wb-total { font-weight: 700; font-size: 17px; border-top: 1px solid #ddd; margin-top: 6px; padding-top: 8px; }
+.wb-pay { width: 100%; border: 0; cursor: pointer; font: inherit; text-align: center; }
+.wb-pay[disabled] { opacity: .6; cursor: wait; }
+.wb-msg { color: #b00020; min-height: 1.2em; }
+.wb-note { font-size: 12px; color: #666; }

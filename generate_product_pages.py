@@ -17,6 +17,25 @@ AI_RESULTS_DIR = BASE_DIR / "ai_results"
 PRODUCTS_DIR = BASE_DIR / "products"
 
 # ------------------------------------------------------------
+# SHOP SETTINGS (Buy now / cart / Western Bid)
+# ------------------------------------------------------------
+
+# Адрес Cloudflare Worker (после деплоя: npx wrangler deploy)
+WORKER_URL = "https://lbk-checkout.rabusten.workers.dev"
+
+# Доставка одного товара по умолчанию, USD.
+# Для отдельных товаров укажите свою сумму в колонке "Shipping" в Excel
+# (например 10 для мелочёвки, 20 для сумок через плечо).
+SHIPPING_DEFAULT_USD = "15.00"
+
+# Если в заказе несколько товаров: самый дорогой по доставке товар платит полную
+# доставку, каждый следующий - этот процент от своей доставки.
+# 100 = доставки суммируются, 50 = каждая следующая со скидкой 50%.
+SHIPPING_ADDITIONAL_PERCENT = 100
+
+PRODUCTS_JSON = BASE_DIR / "products.json"
+
+# ------------------------------------------------------------
 # GOOGLE ANALYTICS
 # ------------------------------------------------------------
 
@@ -263,6 +282,165 @@ def build_json_ld(product, ai, image_url, page_url):
 # Page builder
 # ------------------------------------------------------------
 
+def build_shop_item(product, ai_data):
+    """Return item dict for products.json, or None if the product can't be sold online."""
+
+    try:
+        price = f"{float(product.get('Price')):.2f}"
+    except (TypeError, ValueError):
+        return None
+
+    if float(price) <= 0:
+        return None
+
+    if str(product.get("Currency") or "").strip().upper() != "USD":
+        return None
+
+    # Shipping for one unit: Excel column "Shipping" or the default
+    try:
+        shipping = f"{float(product.get('Shipping')):.2f}"
+    except (TypeError, ValueError):
+        shipping = f"{float(SHIPPING_DEFAULT_USD):.2f}"
+
+    listing_id = str(ai_data["listing_id"])
+
+    # path from the site root (products.json is read from the root), not from products/
+    image = normalize_image_path(
+        ai_data.get("image", product.get("Image")) or ""
+    )[3:]
+
+    name = str(
+        ai_data.get("product_name", product.get("Product")) or ""
+    ).strip()
+
+    return {
+        "name": name,
+        "price": price,
+        "shipping": shipping,
+        "url": f"products/{listing_id}.html",
+        "description": str(product.get("Short Description") or name).strip(),
+        "image": image,
+    }
+
+
+SIMPLE_HEADER = """<header>
+<nav class="navbar">
+<div class="logo"><a href="index.html"><img src="logo2.png" alt="LeatherBagsKingdom Logo"></a></div>
+<ul class="nav-links">
+<li><a href="index.html#home">Home</a></li>
+<li><a href="index.html#bags">Bags</a></li>
+<li><a href="index.html#wallets">Wallets</a></li>
+<li><a href="index.html#belts">Belts</a></li>
+<li><a href="index.html#edc">EDC</a></li>
+<li><a href="index.html#about">About</a></li>
+<li><a href="index.html#contact">Contact</a></li>
+<li><a class="etsy-btn" href="https://www.etsy.com/shop/LeatherBagsKingdom" target="_blank" rel="noopener">Shop on Etsy</a></li>
+</ul>
+</nav>
+</header>"""
+
+SIMPLE_FOOTER = """<footer class="footer">
+<div class="footer-content">
+<h3>LeatherBagsKingdom</h3>
+<p>Handcrafted Leather Goods by Alex Polak</p>
+<p>Made with passion in Ukraine 🇺🇦</p>
+<p style="margin-top:15px;">Every product is handmade from premium Italian leather.</p>
+<div class="footer-links">
+<a href="https://www.etsy.com/shop/LeatherBagsKingdom" target="_blank" rel="noopener">Etsy</a>
+|
+<a href="https://www.instagram.com/leather_bags_kingdom?igsh=cXE2azE1MjFtaWZ4" target="_blank" rel="noopener">Instagram</a>
+|
+<a href="https://pin.it/7lFKWtFp" target="_blank" rel="noopener">Pinterest</a>
+</div>
+</div>
+<p>© 2026 LeatherBagsKingdom. All Rights Reserved.</p>
+</footer>"""
+
+
+def build_simple_page(title, heading, body_html, extra_script=""):
+    """Small site-styled page placed in the site root (thank-you / cancel)."""
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+{GOOGLE_ANALYTICS}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>{esc(title)}</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="favicon.ico">
+</head>
+<body>
+
+{SIMPLE_HEADER}
+
+<main>
+<section class="container" style="max-width:700px;margin:70px auto;padding:0 25px;text-align:center;">
+<h1>{esc(heading)}</h1>
+{body_html}
+</section>
+</main>
+
+{SIMPLE_FOOTER}
+
+{extra_script}
+
+</body>
+</html>
+"""
+
+
+def write_shop_files(shop_items):
+    """Write products.json (single source of truth for the cart and the Worker),
+    plus thank-you.html and cancel.html."""
+
+    data = {
+        "api": WORKER_URL,
+        "currency": "USD",
+        "shipping_default": f"{float(SHIPPING_DEFAULT_USD):.2f}",
+        "shipping_additional_percent": SHIPPING_ADDITIONAL_PERCENT,
+        "products": shop_items,
+    }
+
+    PRODUCTS_JSON.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
+
+    (BASE_DIR / "thank-you.html").write_text(
+        build_simple_page(
+            "Thank you for your order | LeatherBagsKingdom",
+            "Thank you for your order!",
+            "<p>We are confirming your payment and will start preparing your order.</p>"
+            '<p><a class="btn" href="index.html">Back to the shop</a></p>',
+            '<script>try{localStorage.removeItem("wb_cart_v1")}catch(e){}</script>'
+        ),
+        encoding="utf-8"
+    )
+
+    (BASE_DIR / "cancel.html").write_text(
+        build_simple_page(
+            "Payment canceled | LeatherBagsKingdom",
+            "Payment canceled",
+            "<p>Your payment was not completed. Your cart is saved, you can try again at any time.</p>"
+            '<p><a class="btn" href="index.html">Back to the shop</a></p>'
+        ),
+        encoding="utf-8"
+    )
+
+    print()
+    print(
+        f"SHOP - products.json ({len(shop_items)} items), "
+        "thank-you.html, cancel.html written."
+    )
+
+    if "YOUR-WORKER" in WORKER_URL:
+        print("WARNING: set WORKER_URL at the top of this script.")
+
+    print()
+
+
 def build_product_page(product, ai_data):
 
     listing_id = str(ai_data["listing_id"])
@@ -334,6 +512,23 @@ def build_product_page(product, ai_data):
 
     price_display = f"${price} {currency}"
 
+    shop_item = build_shop_item(product, ai_data)
+
+    if shop_item:
+        shop_css = '<link rel="stylesheet" href="../shop.css">'
+        shop_js = '<script src="../shop.js" defer></script>'
+        shop_button = f"""<div class="buy-now-wrap">
+<a class="btn"
+   href="#buy-now"
+   data-buy-now="{esc(listing_id)}">
+Buy now
+</a>
+</div>"""
+    else:
+        shop_css = ""
+        shop_js = ""
+        shop_button = ""
+
     html_page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -370,6 +565,7 @@ def build_product_page(product, ai_data):
       content="{image_url}">
 
 <link rel="stylesheet" href="../style.css">
+{shop_css}
 
 <style>
 .product-page {{
@@ -582,6 +778,7 @@ Price: {esc(price_display)}
    }});">
 Buy on Etsy
 </a>
+{shop_button}
 </div>
 </div>
 
@@ -688,6 +885,8 @@ Pinterest
 
 </footer>
 
+{shop_js}
+
 </body>
 </html>
 """
@@ -751,6 +950,7 @@ def main():
         exist_ok=True
     )
 
+    shop_items = {}
     generated = 0
     skipped = 0
     errors = 0
@@ -784,6 +984,16 @@ def main():
                 page,
                 encoding="utf-8"
             )
+
+            shop_item = build_shop_item(product, ai_data)
+
+            if shop_item:
+                shop_items[listing_id] = shop_item
+            else:
+                print(
+                    "    NOTE - no Buy now button "
+                    "(Price missing/invalid or currency is not USD)"
+                )
 
             generated += 1
 
@@ -822,6 +1032,8 @@ def main():
 
     print("=" * 70)
     print()
+
+    write_shop_files(shop_items)
 
 
 if __name__ == "__main__":
