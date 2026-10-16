@@ -4,22 +4,6 @@
   "shipping_default": "15.00",
   "shipping_additional_percent": 100,
   "products": {
-    "test-050": {
-    "name": "Test payment",
-    "price": "0.50",
-    "shipping": "0.00",
-    "url": "test-pay.html",
-    "description": "Test payment",
-    "image": "logo2.png"
-    },
-    "1827745902": {
-      "name": "Small Leather Messenger Bag: Men's Crossbody Satchel.",
-      "price": "94.00",
-      "shipping": "20.00",
-      "url": "products/1827745902.html",
-      "description": "A handmade leather messenger bag designed for everyday carry, combining practical functionality, durable craftsmanship and timeless style",
-      "image": "images/bags/1827745902.jpg"
-    },
     "4346158727": {
       "name": "Handmade Minimalist Leather Satchel Crossbody Bag – Work Laptop Bag",
       "price": "97.00",
