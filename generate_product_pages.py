@@ -376,7 +376,7 @@ def build_simple_page(title, heading, body_html, extra_script=""):
 {SIMPLE_HEADER}
 
 <main>
-<section class="container" style="max-width:700px;margin:70px auto;padding:0 25px;text-align:center;">
+<section class="container" style="max-width:700px;margin:0 auto;padding:150px 25px 90px;text-align:center;">
 <h1>{esc(heading)}</h1>
 {body_html}
 </section>
