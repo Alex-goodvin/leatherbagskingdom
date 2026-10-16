@@ -282,6 +282,54 @@ def build_json_ld(product, ai, image_url, page_url):
 # Page builder
 # ------------------------------------------------------------
 
+# ------------------------------------------------------------
+# Texts required by Western Bid (Merchant of Record, customs duties)
+# ------------------------------------------------------------
+
+DISCLAIMER_TEXT = (
+    "This store is integrated with the Western Bid\u2122 e-commerce platform, "
+    "and Western Bid, Inc. is the Merchant of Record for all purchases made in this store. "
+    "Therefore, you will see \"WESTERN BID\" listed as the payee on your PayPal account "
+    "and credit card statement."
+)
+
+IMPORT_CHARGES_PARAGRAPHS = [
+    "By placing an order, the Buyer acknowledges and agrees that any customs duties, import taxes, "
+    "value-added taxes (VAT), goods and services taxes (GST), brokerage fees, customs clearance fees, "
+    "handling fees, and any other governmental or carrier-imposed charges arising from the importation "
+    "of the purchased goods into the destination country (collectively, the \"Import Charges\") "
+    "shall be the sole responsibility of the Buyer.",
+
+    "Unless expressly stated otherwise in the product listing, checkout page, shipping method description, "
+    "or order confirmation, all orders are shipped on a duties-and-taxes-unpaid basis, and Import Charges "
+    "are not included in the purchase price or shipping charges paid to the Seller.",
+
+    "Where a product listing, shipping method, or checkout process explicitly states that duties and taxes "
+    "are included in the purchase price or shipping cost (DDP \u2013 Delivered Duty Paid), the applicable "
+    "Import Charges will be paid by the Seller on behalf of the Buyer to the extent specified in such offer.",
+
+    "The Buyer agrees to timely pay all applicable Import Charges required for customs clearance and "
+    "delivery of the goods. Failure or refusal to pay such charges may result in delays, storage fees, "
+    "return of the shipment, abandonment, destruction of the goods, or other actions taken by customs "
+    "authorities or carriers.",
+
+    "To the fullest extent permitted by applicable law, if the Buyer refuses delivery, fails to pay Import "
+    "Charges, or otherwise causes the shipment to be returned, abandoned, or destroyed, the Seller shall "
+    "have no obligation to refund any amounts paid for the goods, shipping costs, customs charges, return "
+    "shipping fees, storage fees, handling fees, or any other costs incurred in connection with the order.",
+
+    "The Seller shall not be liable for any delays, additional costs, penalties, confiscations, or other "
+    "actions taken by customs authorities or governmental agencies in the destination country.",
+]
+
+# Short notice: product page, cart, before the pay button
+SHORT_DISCLAIMER = (
+    "International customers are responsible for any customs duties, import taxes, VAT, brokerage fees, "
+    "or other charges imposed by their country's customs authorities unless duties and taxes are "
+    "explicitly stated as prepaid (DDP)."
+)
+
+
 def build_shop_item(product, ai_data):
     """Return item dict for products.json, or None if the product can't be sold online."""
 
@@ -353,11 +401,20 @@ SIMPLE_FOOTER = """<footer class="footer">
 <a href="https://pin.it/7lFKWtFp" target="_blank" rel="noopener">Pinterest</a>
 </div>
 </div>
+<div class="footer-links" style="margin-top:15px;">
+<a href="privacy-policy.html">Privacy Policy</a>
+|
+<a href="shipping-policy.html">Shipping Policy</a>
+|
+<a href="refund-policy.html">Refund Policy</a>
+|
+<a href="user-agreement.html">User Agreement</a>
+</div>
 <p>© 2026 LeatherBagsKingdom. All Rights Reserved.</p>
 </footer>"""
 
 
-def build_simple_page(title, heading, body_html, extra_script=""):
+def build_simple_page(title, heading, body_html, extra_script="", align="center"):
     """Small site-styled page placed in the site root (thank-you / cancel)."""
 
     return f"""<!DOCTYPE html>
@@ -376,7 +433,7 @@ def build_simple_page(title, heading, body_html, extra_script=""):
 {SIMPLE_HEADER}
 
 <main>
-<section class="container" style="max-width:700px;margin:0 auto;padding:150px 25px 90px;text-align:center;">
+<section class="container" style="max-width:700px;margin:0 auto;padding:150px 25px 90px;text-align:{align};">
 <h1>{esc(heading)}</h1>
 {body_html}
 </section>
@@ -389,6 +446,25 @@ def build_simple_page(title, heading, body_html, extra_script=""):
 </body>
 </html>
 """
+
+
+def write_policy_page(path, page_html, snippet_html=None, marker=None):
+    """Policy pages belong to the owner: never overwrite an existing page."""
+
+    if not path.exists():
+        path.write_text(page_html, encoding="utf-8")
+        return
+
+    # the required text is already on the page: nothing to do
+    if marker and marker in path.read_text(encoding="utf-8", errors="ignore"):
+        return
+
+    print(f"NOTE - {path.name} already exists and was NOT overwritten.")
+
+    if snippet_html:
+        snippet_path = BASE_DIR / f"{path.stem}-new-section.html"
+        snippet_path.write_text(snippet_html, encoding="utf-8")
+        print(f"       Add the text from {snippet_path.name} to your {path.name}.")
 
 
 def write_shop_files(shop_items):
@@ -427,6 +503,23 @@ def write_shop_files(shop_items):
             '<p><a class="btn" href="index.html">Back to the shop</a></p>'
         ),
         encoding="utf-8"
+    )
+
+    shipping_html = (
+        "<h2>Customs Duties and Taxes</h2>"
+        + "".join(f"<p>{esc(p)}</p>" for p in IMPORT_CHARGES_PARAGRAPHS)
+    )
+
+    write_policy_page(
+        BASE_DIR / "shipping-policy.html",
+        build_simple_page(
+            "Shipping Policy | LeatherBagsKingdom",
+            "Shipping Policy",
+            shipping_html,
+            align="left"
+        ),
+        shipping_html,
+        marker="Import Charges"
     )
 
     print()
@@ -523,6 +616,7 @@ def build_product_page(product, ai_data):
    data-buy-now="{esc(listing_id)}">
 Buy now
 </a>
+<p class="shop-disclaimer">{SHORT_DISCLAIMER} <a href="../shipping-policy.html">Shipping Policy</a></p>
 </div>"""
     else:
         shop_css = ""
@@ -877,6 +971,16 @@ Pinterest
 </a>
 
 </div>
+</div>
+
+<div class="footer-links" style="margin-top:15px;">
+<a href="../privacy-policy.html">Privacy Policy</a>
+|
+<a href="../shipping-policy.html">Shipping Policy</a>
+|
+<a href="../refund-policy.html">Refund Policy</a>
+|
+<a href="../user-agreement.html">User Agreement</a>
 </div>
 
 <p>

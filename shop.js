@@ -65,9 +65,10 @@
             '<label><input type="radio" name="gate" value="stripe.com"> Credit / debit card (Stripe)</label>' +
           '</fieldset>' +
           '<div class="wb-totals"></div>' +
+          '<p class="wb-disclaimer">International customers are responsible for any customs duties, import taxes, VAT, brokerage fees, or other charges imposed by their country&rsquo;s customs authorities unless duties and taxes are explicitly stated as prepaid (DDP). See our <a href="' + BASE + 'shipping-policy.html" target="_blank" rel="noopener">Shipping Policy</a> and <a href="' + BASE + 'user-agreement.html" target="_blank" rel="noopener">User Agreement</a>.</p>' +
           '<button type="submit" class="btn wb-pay">Pay securely</button>' +
           '<p class="wb-msg"></p>' +
-          '<p class="wb-note">You will be redirected to a secure payment page.</p>' +
+          '<p class="wb-note">You will be redirected to a secure payment page. Your PayPal or card statement will show &quot;WESTERN BID&quot; as the payee.</p>' +
         '</form>' +
       '</aside>';
     while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
