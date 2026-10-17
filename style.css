@@ -483,15 +483,20 @@ section {
 
 
     .logo img {
-        height: 50px;
-         width:auto;
+        height: 38px;
+        width:auto;
     }
 
     .nav-links {
+        display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 15px;
-        margin-top: 15px;
+        gap: 5px 12px;
+        margin-top: 2px;
+    }
+
+     .nav-links a {
+        font-size: 13px;
     }
 
     .hero img {
@@ -507,14 +512,15 @@ section {
         font-size: 18px;
     }
 
-.hero button {
+    .hero button {
         padding: 16px 35px;
         font-size: 18px;
     }
 
     .navbar {
         flex-direction: column;
-        padding: 16px;
+        padding: 6px 12px;
+        gap: 4px;
     }
 
 
