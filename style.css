@@ -481,6 +481,10 @@ section {
     color: white;
 }
 
+    .logo {
+        flex: 0 0 auto;
+    }
+
 
     .logo img {
         height: 38px;
@@ -489,14 +493,17 @@ section {
 
     .nav-links {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 5px 12px;
-        margin-top: 2px;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        margin-top: 0;
     }
 
-     .nav-links a {
-        font-size: 13px;
+    .nav-links a {
+        font-size: 11px;
+        white-space: nowrap;
     }
 
     .hero img {
@@ -518,9 +525,11 @@ section {
     }
 
     .navbar {
-        flex-direction: column;
-        padding: 6px 12px;
-        gap: 4px;
+         flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 10px;
+        gap: 8px;
     }
 
 
