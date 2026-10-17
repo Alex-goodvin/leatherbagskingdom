@@ -31,3 +31,11 @@
 .wb-pay[disabled] { opacity: .6; cursor: wait; }
 .wb-msg { color: #b00020; min-height: 1.2em; }
 .wb-note { font-size: 12px; color: #666; }
+
+.shop-disclaimer { margin-top: 12px; max-width: 460px; font-size: 13px; line-height: 1.45; opacity: .8; }
+.shop-disclaimer a { text-decoration: underline; }
+.wb-disclaimer { margin: 14px 0 10px; font-size: 12px; line-height: 1.45; color: #555; }
+.wb-disclaimer a { text-decoration: underline; color: inherit; }
+.wb-notice { margin: 12px 18px 0; padding: 10px 12px; background: #fff4d6; border: 1px solid #e6c36a; border-radius: 6px; font-size: 14px; color: #5c4400; }
+.wb-notice[hidden] { display: none; }
+.wb-unique { font-size: 13px; color: #555; }

@@ -2,212 +2,238 @@
   "api": "https://lbk-checkout.rabusten.workers.dev",
   "currency": "USD",
   "shipping_default": "15.00",
-  "shipping_additional_percent": 100,
+  "shipping_additional_percent": 50,
   "products": {
     "1827745902": {
       "name": "Small Leather Messenger Bag: Men's Crossbody Satchel.",
-      "price": "94.00",
+      "price": "75.20",
       "shipping": "20.00",
+      "max_qty": 1,
       "url": "products/1827745902.html",
       "description": "A handmade leather messenger bag designed for everyday carry, combining practical functionality, durable craftsmanship and timeless style",
       "image": "images/bags/1827745902.jpg"
     },
     "4346158727": {
       "name": "Handmade Minimalist Leather Satchel Crossbody Bag – Work Laptop Bag",
-      "price": "97.00",
+      "price": "77.60",
       "shipping": "20.00",
+      "max_qty": 1,
       "url": "products/4346158727.html",
       "description": "A minimalist handmade leather satchel designed for everyday work and travel, combining practical organization with timeless craftsmanship.",
       "image": "images/bags/4346158727.jpg"
     },
     "1894993167": {
       "name": "Handmade Leather Crossbody Bag: Small Messenger Shoulder Bag.",
-      "price": "79.00",
+      "price": "63.20",
       "shipping": "20.00",
+      "max_qty": 1,
       "url": "products/1894993167.html",
       "description": "A compact handmade leather crossbody bag that combines everyday functionality, comfortable carry and a classic timeless design.",
       "image": "images/bags/1894993167.jpg"
     },
     "1774631035": {
       "name": "Handmade Genuine Leather Sling Bag – Minimalist Crossbody Fanny Pack, Cognac Brown Waist Bag",
-      "price": "69.00",
+      "price": "55.20",
       "shipping": "20.00",
+      "max_qty": 1,
       "url": "products/1774631035.html",
       "description": "A versatile handmade genuine leather sling bag designed for convenient everyday carry with a minimalist and timeless look.",
       "image": "images/bags/1774631035.jpg"
     },
     "1641259664": {
       "name": "Handmade Brown Leather Minimalist Wallet: Mens Card Holder.",
-      "price": "75.00",
+      "price": "31.20",
       "shipping": "10.00",
+      "max_qty": 1,
       "url": "products/1641259664.html",
       "description": "A handmade brown leather minimalist wallet designed to keep essential cards organized in a compact and practical everyday carry accessory.",
       "image": "images/wallets/1641259664.jpg"
     },
     "712599567": {
       "name": "Hand Sewn Brown Leather Wallet: Italian Leather Coin Holder",
-      "price": "39.00",
+      "price": "31.20",
       "shipping": "10.00",
+      "max_qty": 1,
       "url": "products/712599567.html",
       "description": "A hand-sewn brown leather wallet crafted from premium Italian leather, combining classic craftsmanship with practical everyday organization.",
       "image": "images/wallets/712599567.jpg"
     },
     "4497437028": {
       "name": "Heavy Duty Black Leather Belt – Italian Buckle, Mens Jeans Accessory",
-      "price": "39.00",
+      "price": "39.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4497437028.html",
       "description": "A heavy-duty handmade black leather belt designed for everyday wear, featuring durable craftsmanship and a classic Italian buckle.",
       "image": "images/belts/4497437028.jpg"
     },
     "4497421494": {
       "name": "Handmade Full Grain Leather Belt, Black, Silver Buckle, 1.57\" Width, Men's Work Belt",
-      "price": "49.00",
+      "price": "39.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4497421494.html",
       "description": "A handmade full-grain black leather belt designed for reliable everyday wear, with a classic silver buckle and durable construction.",
       "image": "images/belts/4497421494.jpg"
     },
     "4497421419": {
       "name": "Handmade Full Grain Leather Belt, Black Minimalist Waist Belt, Classic Metal Buckle",
-      "price": "49.00",
+      "price": "39.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4497421419.html",
       "description": "A handmade full-grain black leather belt with a minimalist design, combining timeless style, durability and everyday functionality.",
       "image": "images/belts/4497421419.jpg"
     },
     "4518376787": {
       "name": "Handmade Full Grain Leather Belt, Black, Silver Buckle, 1.57\" Width, Men's Work Belt",
-      "price": "49.00",
+      "price": "39.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4518376787.html",
       "description": "A durable handmade black leather work belt crafted from full-grain leather and designed for comfortable everyday use.",
       "image": "images/belts/4518376787.jpg"
     },
     "4507840144": {
       "name": "Handmade Full Grain Leather Belt, Black, Silver Buckle, 1.57\" Width, Men's Work Belt",
-      "price": "49.00",
+      "price": "39.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4507840144.html",
       "description": "A classic handmade full-grain leather belt created for everyday wear, combining strong materials, practical design and timeless style.",
       "image": "images/belts/4507840144.jpg"
     },
     "4507832399": {
       "name": "Handmade Full Grain Leather Belt, Black Minimalist Waist Belt, Classic Style For Men",
-      "price": "49.00",
+      "price": "39.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4507832399.html",
       "description": "A handmade black full-grain leather belt with a clean minimalist design, created as a durable and versatile everyday accessory.",
       "image": "images/belts/4507832399.jpg"
     },
     "1854958967": {
       "name": "Handmade Black Leather Belt Pouch, EDC Carry, gift for him by Alex Polak",
-      "price": "69.00",
+      "price": "55.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/1854958967.html",
       "description": "A handmade black leather belt pouch designed for practical everyday carry, combining durable craftsmanship with convenient organization.",
       "image": "images/edc/1854958967.jpg"
     },
     "1115911348": {
       "name": "Leather EDC Belt Pouch, Coin, Card Holder, Gift for Hunter",
-      "price": "67.00",
+      "price": "53.60",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/1115911348.html",
       "description": "A handmade leather EDC belt pouch designed to keep coins, cards and small everyday essentials organized and easy to access.",
       "image": "images/edc/1115911348.jpg"
     },
     "4538303179": {
       "name": "Leather Belt Card Holder, Minimalist Belt Pouch, Handmade Slim Wallet with Belt Loop, Molded Leather Card Sleeve, EDC Belt Case for Men",
-      "price": "59.00",
+      "price": "47.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4538303179.html",
       "description": "A handmade leather belt card holder designed for minimalist everyday carry, combining secure card storage with convenient belt-loop access.",
       "image": "images/edc/4538303179.jpg"
     },
     "1677683372": {
       "name": "Handmade Leather Belt Pouch, EDC Coin & Card Holder",
-      "price": "67.00",
+      "price": "53.60",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/1677683372.html",
       "description": "A handmade leather belt pouch designed to organize coins, cards and small everyday essentials in a compact EDC accessory.",
       "image": "images/edc/1677683372.jpg"
     },
     "4505762718": {
       "name": "Handmade Leather EDC Belt Pouch / Multitool & Folding Knife Sheath / EveryDay Carry Belt Organizer by Alex Polak",
-      "price": "69.00",
+      "price": "55.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4505762718.html",
       "description": "A handmade full-grain leather EDC belt pouch designed to keep coins, keys and everyday essentials organized and easily accessible.",
       "image": "images/edc/4505762718.jpg"
     },
     "4384063617": {
       "name": "Handmade Leather EDC Belt Pouch, Minimalist Leather Organizer for Men, Knife & Lighter Holder, Bushcraft Gear, Gift for Him",
-      "price": "69.00",
+      "price": "55.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4384063617.html",
       "description": "A handmade leather EDC belt pouch designed to keep coins, cards and small everyday essentials organized and easy to access.",
       "image": "images/edc/4384063617.jpg"
     },
     "4559330701": {
       "name": "Leather Belt Pouch Wallet, Leather Belt Bag, EDC Belt Pocket Organizer with YKK Zipper, Handmade Card and Key Holder, Gift for him",
-      "price": "55.00",
+      "price": "44.00",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4559330701.html",
       "description": "A handmade full-grain leather EDC belt pouch designed to keep coins, keys and everyday essentials organized and easily accessible.",
       "image": "images/edc/4559330701.jpg"
     },
     "4524136544": {
       "name": "Leather Belt Pouch Wallet, Leather Belt Bag, EDC Belt Pocket Organizer with YKK Zipper, Handmade Card and Key Holder, Gift for him",
-      "price": "55.00",
+      "price": "44.00",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4524136544.html",
       "description": "A handmade leather belt pouch designed to organize coins, cards and small everyday essentials in a compact EDC accessory.",
       "image": "images/edc/4524136544.jpg"
     },
     "1815374701": {
       "name": "Handmade Leather Belt Pouch, EDC Waist Bag, Coin Card Holder",
-      "price": "69.00",
+      "price": "55.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/1815374701.html",
       "description": "A handmade leather belt pouch designed to organize coins, cards and small everyday essentials in a compact EDC accessory.",
       "image": "images/edc/1815374701.jpg"
     },
     "4443159878": {
       "name": "Handmade Croc Embossed Leather Tote Bag – Structured Luxury Handbag for Everyday",
-      "price": "87.00",
+      "price": "69.60",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4443159878.html",
       "description": "Elegant handmade leather tote bag in deep burgundy crocodile embossed leather.",
       "image": "images/bags/4443159878.jpg"
     },
     "4497871197": {
       "name": "Horizontal Leather Belt Pouch, Low Profile EDC Card Holder, Stealth Belt Wallet, Gift for him, Alex Polak",
-      "price": "59.00",
+      "price": "47.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4497871197.html",
       "description": "A handmade leather belt pouch designed to organize coins, cards and small everyday essentials in a compact EDC accessory.",
       "image": "images/edc/4497871197.jpg"
     },
     "4546239570": {
       "name": "Horizontal Leather Belt Pouch, Low Profile EDC Card Holder, Stealth Belt Wallet, Gift for him, Alex Polak",
-      "price": "59.00",
+      "price": "47.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4546239570.html",
       "description": "A handmade leather belt pouch designed to organize coins, cards and small everyday essentials in a compact EDC accessory.",
       "image": "images/edc/4546239570.jpg"
     },
     "4361026591": {
       "name": "Handmade Brown Leather Belt Pouch, EDC Carry-All",
-      "price": "59.00",
+      "price": "47.20",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/4361026591.html",
       "description": "A handmade leather belt pouch designed to organize coins, cards and small everyday essentials in a compact EDC accessory.",
       "image": "images/edc/4361026591.jpg"
     },
     "1126874991": {
       "name": "Leather EDC Belt Pouch, Coin, Card Holder, Gift for Hunter",
-      "price": "67.00",
+      "price": "53.60",
       "shipping": "15.00",
+      "max_qty": 1,
       "url": "products/1126874991.html",
       "description": "A handmade leather EDC belt pouch designed to keep coins, cards and small everyday essentials organized and easy to access.",
       "image": "images/edc/1126874991.jpg"

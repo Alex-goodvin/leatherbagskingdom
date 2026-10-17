@@ -19,6 +19,7 @@
   function saveCart() { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {} }
   function toCents(v) { return Math.round(parseFloat(v) * 100); }
   function usd(c) { return "$" + (c / 100).toFixed(2); }
+  function maxQty(id) { var m = catalog.products[id].max_qty; return m != null ? Number(m) : 1; }
   function has(id) { return catalog && Object.prototype.hasOwnProperty.call(catalog.products, id); }
   function track(name, params) { try { if (window.gtag) window.gtag("event", name, params); } catch (e) {} }
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
@@ -47,6 +48,7 @@
       '<div class="wb-overlay" hidden></div>' +
       '<aside class="wb-drawer" hidden role="dialog" aria-label="Shopping cart">' +
         '<div class="wb-head"><strong>Your cart</strong><button type="button" class="wb-close" aria-label="Close">&times;</button></div>' +
+        '<div class="wb-notice" hidden></div>' +
         '<div class="wb-items"></div>' +
         '<form class="wb-form">' +
           '<h3>Contact</h3>' +
@@ -78,6 +80,7 @@
     els.overlay = document.querySelector(".wb-overlay");
     els.drawer = document.querySelector(".wb-drawer");
     els.items = document.querySelector(".wb-items");
+    els.notice = document.querySelector(".wb-notice");
     els.form = document.querySelector(".wb-form");
     els.totals = document.querySelector(".wb-totals");
     els.msg = document.querySelector(".wb-msg");
@@ -92,7 +95,7 @@
       var b = e.target.closest("[data-act]");
       if (!b) return;
       var id = b.getAttribute("data-id"), act = b.getAttribute("data-act");
-      if (act === "inc") cart[id] = Math.min(99, (cart[id] || 0) + 1);
+      if (act === "inc") addOne(id);
       if (act === "dec") cart[id] = (cart[id] || 1) - 1;
       if (act === "rm" || cart[id] <= 0) delete cart[id];
       saveCart(); refresh();
@@ -151,11 +154,17 @@
       var nm = document.createElement("div"); nm.className = "wb-name"; nm.textContent = p.name;
       var pr = document.createElement("div"); pr.textContent = usd(toCents(p.price));
       var q = document.createElement("div"); q.className = "wb-qty";
-      q.innerHTML =
-        '<button type="button" data-act="dec" data-id="' + id + '" aria-label="Less">−</button>' +
-        "<span>" + cart[id] + "</span>" +
-        '<button type="button" data-act="inc" data-id="' + id + '" aria-label="More">+</button>' +
-        '<button type="button" class="wb-rm" data-act="rm" data-id="' + id + '">Remove</button>';
+      if (maxQty(id) === 1) {
+        q.innerHTML =
+          '<span class="wb-unique">One-of-a-kind item &middot; 1 available</span>' +
+          '<button type="button" class="wb-rm" data-act="rm" data-id="' + id + '">Remove</button>';
+      } else {
+        q.innerHTML =
+          '<button type="button" data-act="dec" data-id="' + id + '" aria-label="Less">−</button>' +
+          "<span>" + cart[id] + "</span>" +
+          '<button type="button" data-act="inc" data-id="' + id + '" aria-label="More">+</button>' +
+          '<button type="button" class="wb-rm" data-act="rm" data-id="' + id + '">Remove</button>';
+      }
       info.appendChild(nm); info.appendChild(pr); info.appendChild(q);
       row.appendChild(img); row.appendChild(info);
       box.appendChild(row);
@@ -171,9 +180,32 @@
     els.totals.innerHTML = h + '<div class="wb-trow wb-total"><span>Total</span><span>' + usd(t.total) + "</span></div>";
   }
 
+  function notice(text) {
+    els.notice.textContent = text || "";
+    els.notice.hidden = !text;
+  }
+
+  // добавляет единицу товара с учётом лимита; возвращает false, если лимит достигнут
+  function addOne(id) {
+    var max = maxQty(id), name = catalog.products[id].name;
+    if ((cart[id] || 0) >= max) {
+      notice(max === 1
+        ? "\u201c" + name + "\u201d is a one-of-a-kind item: only 1 is available, and it is already in your cart."
+        : "Only " + max + " of this item can be ordered at once.");
+      return false;
+    }
+    cart[id] = (cart[id] || 0) + 1;
+    notice("");
+    return true;
+  }
+
   function refresh() {
     var n = 0;
-    Object.keys(cart).forEach(function (id) { if (has(id)) n += cart[id]; else delete cart[id]; });
+    Object.keys(cart).forEach(function (id) {
+      if (!has(id)) { delete cart[id]; return; }
+      if (cart[id] > maxQty(id)) cart[id] = maxQty(id);
+      n += cart[id];
+    });
     saveCart();
     els.count.textContent = n;
     els.fab.hidden = n === 0 || !els.drawer.hidden;
@@ -182,6 +214,7 @@
   }
 
   function openDrawer() {
+    notice("");
     refresh();
     els.overlay.hidden = false; els.drawer.hidden = false; els.fab.hidden = true;
     document.body.style.overflow = "hidden";
@@ -236,10 +269,11 @@
         alert("Online checkout is temporarily unavailable. Please use the Buy on Etsy button.");
         return;
       }
-      cart[id] = Math.min(99, (cart[id] || 0) + 1);
+      var added = addOne(id), msg = els.notice.textContent;
       saveCart();
-      track("click_buy_now", { listing_id: id });
+      if (added) track("click_buy_now", { listing_id: id });
       openDrawer();
+      if (!added) notice(msg);
     });
   });
 

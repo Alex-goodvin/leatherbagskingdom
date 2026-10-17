@@ -31,9 +31,13 @@ SHIPPING_DEFAULT_USD = "15.00"
 # Если в заказе несколько товаров: самый дорогой по доставке товар платит полную
 # доставку, каждый следующий - этот процент от своей доставки.
 # 100 = доставки суммируются, 50 = каждая следующая со скидкой 50%.
-SHIPPING_ADDITIONAL_PERCENT = 100
+SHIPPING_ADDITIONAL_PERCENT = 50
 
 PRODUCTS_JSON = BASE_DIR / "products.json"
+
+# Сколько штук одного товара можно купить за раз. 1 = товар в единственном экземпляре.
+# Если товара несколько, добавьте в Excel колонку "Max Qty" и впишите число.
+DEFAULT_MAX_QTY = 1
 
 # ------------------------------------------------------------
 # GOOGLE ANALYTICS
@@ -350,6 +354,11 @@ def build_shop_item(product, ai_data):
     except (TypeError, ValueError):
         shipping = f"{float(SHIPPING_DEFAULT_USD):.2f}"
 
+    try:
+        max_qty = max(1, int(float(product.get("Max Qty"))))
+    except (TypeError, ValueError):
+        max_qty = DEFAULT_MAX_QTY
+
     listing_id = str(ai_data["listing_id"])
 
     # path from the site root (products.json is read from the root), not from products/
@@ -365,6 +374,7 @@ def build_shop_item(product, ai_data):
         "name": name,
         "price": price,
         "shipping": shipping,
+        "max_qty": max_qty,
         "url": f"products/{listing_id}.html",
         "description": str(product.get("Short Description") or name).strip(),
         "image": image,
@@ -398,7 +408,7 @@ SIMPLE_FOOTER = """<footer class="footer">
 |
 <a href="https://www.instagram.com/leather_bags_kingdom?igsh=cXE2azE1MjFtaWZ4" target="_blank" rel="noopener">Instagram</a>
 |
-<a href="https://pin.it/7lFKWtFp" target="_blank" rel="noopener">Pinterest</a>
+<a href="https://pin.it/7lFKWtFpX" target="_blank" rel="noopener">Pinterest</a>
 </div>
 </div>
 <div class="footer-links" style="margin-top:15px;">
@@ -964,7 +974,7 @@ Etsy
 Instagram
 </a>
 |
-<a href="https://pin.it/7lFKWtFp"
+<a href="https://pin.it/7lFKWtFpX"
    target="_blank"
    rel="noopener">
 Pinterest
