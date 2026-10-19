@@ -4,15 +4,6 @@
   "shipping_default": "15.00",
   "shipping_additional_percent": 50,
   "products": {
-    "test-050": {
-    "name": "Test payment",
-    "price": "0.50",
-    "shipping": "0.00",
-    "max_qty": 1,
-    "url": "test-pay.html",
-    "description": "Test payment",
-    "image": "logo2.png"
-    },
     "1827745902": {
       "name": "Small Leather Messenger Bag: Men's Crossbody Satchel.",
       "price": "75.20",
