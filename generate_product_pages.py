@@ -585,6 +585,23 @@ def build_product_page(product, ai_data):
 
     image_relative = normalize_image_path(image_path)
 
+    # Product gallery: main image plus up to three optional images from Excel.
+    gallery_images = []
+
+    for candidate in [
+        image_path,
+        product.get("Image 2"),
+        product.get("Image 3"),
+        product.get("Image 4"),
+    ]:
+        if candidate is None or not str(candidate).strip():
+            continue
+
+        normalized = normalize_image_path(candidate)
+
+        if normalized not in gallery_images:
+            gallery_images.append(normalized)
+
     page_url = (
         f"https://leatherbagskingdom.com/"
         f"products/{listing_id}.html"
@@ -689,6 +706,75 @@ Buy now
     flex: 1;
     text-align: center;
 }}
+
+
+.product-gallery {{
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+}}
+
+.product-gallery .gallery-main-image {{
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 4px;
+}}
+
+.gallery-arrow {{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: #222;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}}
+
+.gallery-prev {{
+    left: 10px;
+}}
+
+.gallery-next {{
+    right: 10px;
+}}
+
+.gallery-arrow[hidden],
+.gallery-counter[hidden] {{
+    display: none;
+}}
+
+.gallery-counter {{
+    padding-top: 10px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+}}
+
+@media (max-width: 768px) {{
+    .product-gallery {{
+        max-width: 100%;
+    }}
+
+    .product-gallery .gallery-main-image {{
+        max-width: 100%;
+    }}
+
+    .gallery-arrow {{
+        width: 38px;
+        height: 38px;
+    }}
+}}
+
 
 .product-image img {{
     width: 100%;
@@ -849,8 +935,28 @@ Shop on Etsy
 
 <div class="product-image">
 
-<img src="{esc(image_relative)}"
+
+
+<div class="product-gallery"
+     data-gallery-images="{esc(json.dumps(gallery_images))}">
+
+<img class="gallery-main-image"
+     src="{esc(image_relative)}"
      alt="{esc(alt_text)}">
+
+<button type="button"
+        class="gallery-arrow gallery-prev"
+        aria-label="Previous photo"
+        hidden>&#10094;</button>
+
+<button type="button"
+        class="gallery-arrow gallery-next"
+        aria-label="Next photo"
+        hidden>&#10095;</button>
+
+<div class="gallery-counter" aria-live="polite" hidden></div>
+
+</div>
 
 </div>
 
@@ -1000,6 +1106,56 @@ Pinterest
 </footer>
 
 {shop_js}
+
+
+
+<script>
+document.querySelectorAll(".product-gallery").forEach(function (gallery) {{
+    let images;
+
+    try {{
+        images = JSON.parse(gallery.dataset.galleryImages || "[]");
+    }} catch (error) {{
+        images = [];
+    }}
+
+    const mainImage = gallery.querySelector(".gallery-main-image");
+    const prevButton = gallery.querySelector(".gallery-prev");
+    const nextButton = gallery.querySelector(".gallery-next");
+    const counter = gallery.querySelector(".gallery-counter");
+
+    if (!mainImage || images.length < 2) {{
+        return;
+    }}
+
+    let currentIndex = images.indexOf(mainImage.getAttribute("src"));
+
+    if (currentIndex < 0) {{
+        currentIndex = 0;
+    }}
+
+    prevButton.hidden = false;
+    nextButton.hidden = false;
+    counter.hidden = false;
+
+    function showImage(index) {{
+        currentIndex = (index + images.length) % images.length;
+        mainImage.src = images[currentIndex];
+        counter.textContent = (currentIndex + 1) + " / " + images.length;
+    }}
+
+    prevButton.addEventListener("click", function () {{
+        showImage(currentIndex - 1);
+    }});
+
+    nextButton.addEventListener("click", function () {{
+        showImage(currentIndex + 1);
+    }});
+
+    showImage(currentIndex);
+}});
+</script>
+
 
 </body>
 </html>
