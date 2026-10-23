@@ -1,0 +1,32 @@
+{
+  "listing_id": "4598044441",
+  "product_name": "Leather EDC Belt Pouch, Coin, Card Holder, Gift for Hunter",
+  "category": "EDC",
+  "etsy_url": "https://www.etsy.com/listing/4598044441",
+  "image": "images\\edc\\4598044441.jpg",
+  "description_source": "product_sources\\4598044441.txt",
+  "source_hash": "9f81d35405ea7056e9c5e64bbfdff5a9b1126163a382700a1da0ee97c06a0442",
+  "ai_result": {
+    "visual_observations": [
+      "Compact leather pouch with a rectangular profile and rounded lower corners.",
+      "Visible flap with two round, gold-tone metal fasteners.",
+      "Visible perimeter stitching in a contrasting darker tone.",
+      "The leather appears warm reddish brown in the photograph; exact color is not confirmed by the provided product information."
+    ],
+    "product_details": [
+      "Material: Premium Italian vegetable-tanned leather.",
+      "Height: 2.75 inches (70 mm).",
+      "Width: 4.33 inches (110 mm).",
+      "Depth: 0.98 inches (25 mm).",
+      "Belt compatibility: Fits standard belts up to 1.57 inches (up to 40 mm) wide.",
+      "Designed to carry coins, multiple credit cards, folded cash, a pocket knife or multitool, keys, flash drives, or a lighter."
+    ],
+    "long_description": "Keep everyday essentials organized and close at hand with this handmade leather EDC belt pouch. Crafted from premium Italian vegetable-tanned leather, it offers a compact way to carry coins, multiple credit cards, folded cash, and small EDC items such as a pocket knife, multitool, keys, flash drive, or lighter.\n\nThe pouch slides onto standard belts up to 1.57 inches (up to 40 mm) wide, keeping your essentials accessible without adding unnecessary bulk. Measuring 2.75 inches (70 mm) high, 4.33 inches (110 mm) wide, and 0.98 inches (25 mm) deep, it is a practical choice for everyday carry, outdoor use, or as a thoughtful gift for a hunter or anyone who prefers a streamlined belt setup.",
+    "seo_title": "Leather EDC Belt Pouch for Cards, Coins & Small Essentials",
+    "meta_description": "Handmade Italian vegetable-tanned leather EDC belt pouch for coins, cards, folded cash and small essentials. Fits belts up to 1.57 inches wide.",
+    "warnings": [
+      "The exact leather color is not specified in the source information; the warm reddish-brown appearance is based only on the photograph.",
+      "The image shows two round metal-tone fasteners, but the source information does not specify their material or closure mechanism."
+    ]
+  }
+}
