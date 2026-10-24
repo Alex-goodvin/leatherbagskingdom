@@ -1,28 +1,56 @@
-from pathlib import Path
 
+import json
+from pathlib import Path
+from urllib.parse import urlparse
+import xml.etree.ElementTree as ET
 
 BASE_URL = "https://leatherbagskingdom.com"
 
 
 def main():
-    products_dir = Path("products")
+    catalog_path = Path("products.json")
+    if not catalog_path.is_file():
+        raise SystemExit("ERROR: products.json not found.")
 
-    if not products_dir.exists():
-        raise SystemExit("ERROR: products directory not found.")
+    try:
+        with catalog_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError) as exc:
+        raise SystemExit(f"ERROR: cannot read products.json: {exc}")
 
-    product_files = sorted(
-        products_dir.glob("*.html"),
-        key=lambda path: path.name
-    )
+    products = data.get("products")
+    if not isinstance(products, dict) or not products:
+        raise SystemExit("ERROR: products catalog is missing or empty.")
 
-    urls = [
-        f"{BASE_URL}/"
-    ]
+    urls = [f"{BASE_URL}/"]
+    seen = set(urls)
 
-    urls.extend(
-        f"{BASE_URL}/products/{path.name}"
-        for path in product_files
-    )
+    for product_id, product in products.items():
+        if not isinstance(product, dict):
+            raise SystemExit(f"ERROR: invalid product entry: {product_id}")
+
+        path = product.get("url")
+        if not isinstance(path, str) or not path.strip():
+            raise SystemExit(f"ERROR: missing URL for product {product_id}")
+
+        path = path.strip()
+        parsed = urlparse(path)
+
+        if (
+            parsed.scheme or parsed.netloc
+            or not path.startswith("products/")
+            or not path.endswith(".html")
+            or ".." in Path(path).parts
+            or "?" in path or "#" in path
+        ):
+            raise SystemExit(f"ERROR: invalid product URL: {path}")
+
+        url = f"{BASE_URL}/{path}"
+        if url in seen:
+            raise SystemExit(f"ERROR: duplicate URL: {url}")
+
+        seen.add(url)
+        urls.append(url)
 
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
@@ -39,17 +67,18 @@ def main():
         ])
 
     lines.append("</urlset>")
+    content = "\n".join(lines) + "\n"
 
-    Path("sitemap.xml").write_text(
-        "\n".join(lines) + "\n",
-        encoding="utf-8"
-    )
+    # Validate XML before changing the existing sitemap.
+    ET.fromstring(content)
+
+    Path("sitemap.xml").write_text(content, encoding="utf-8")
 
     print()
     print("=" * 60)
     print("LeatherBagsKingdom - CREATE SITEMAP")
     print("=" * 60)
-    print(f"Product pages : {len(product_files)}")
+    print(f"Product URLs  : {len(urls) - 1}")
     print(f"Total URLs    : {len(urls)}")
     print("Sitemap       : sitemap.xml")
     print()
