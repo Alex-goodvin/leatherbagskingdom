@@ -5,30 +5,29 @@
   "etsy_url": "https://www.etsy.com/listing/4361026591",
   "image": "images\\edc\\4361026591.jpg",
   "description_source": "product_sources\\4361026591.txt",
-  "source_hash": "31a463272897966f37adc43b1d8e35719b2796cd03861ee2c4d3d141304d3c92",
+  "source_hash": "d01738ede63f215db45c88c966d129a494726f2f4518b136146941fe0fa44746",
   "ai_result": {
     "visual_observations": [
-      "Compact brown leather pouch with a flap-style front.",
-      "Visible dark leather strap detail across the front, secured with two round metal-colored elements.",
-      "Visible contrasting light-colored hand stitching around the pouch edges and front sections.",
-      "The pouch has a structured rectangular shape with angled flap edges and a projecting belt loop or strap at the back area."
+      "Brown leather pouch with a structured rectangular shape and a flap front.",
+      "A contrasting dark leather strap runs vertically over the flap and extends below the pouch.",
+      "Two round metal fasteners are visible on the front strap.",
+      "Visible hand stitching outlines the pouch edges and reinforces several leather sections.",
+      "The leather has a natural, textured appearance with tonal variation."
     ],
     "product_details": [
-      "Material: High-quality Italian leather",
-      "Construction: Completely hand-stitched with waxed thread",
-      "Height: 3.54 inches (90 mm)",
-      "Width: 5.12 inches (130 mm)",
-      "Depth: 1.37 inches (35 mm)",
-      "Capacity: Holds up to a dozen bank cards and a certain amount of banknotes",
-      "Suitable for standard belts up to 1.57 inches wide (up to 40 mm)",
-      "Designed to carry money, bank cards, keys and other small items"
+      "Material: high-quality Italian leather.",
+      "Construction: completely hand-stitched with waxed thread; 100% handmade.",
+      "Dimensions: 3.54 inches high × 5.12 inches wide × 1.37 inches deep (90 mm × 130 mm × 35 mm).",
+      "Capacity: can hold approximately a dozen bank cards and a certain amount of banknotes.",
+      "Fits standard belts up to 1.57 inches wide (up to 40 mm).",
+      "Suitable for carrying coins, bank cards, keys and other small everyday essentials."
     ],
-    "long_description": "Keep everyday essentials together with this handmade brown leather belt pouch. Designed as a compact EDC carry-all, it can hold coins, bank cards, keys, banknotes and other small items while keeping them close at hand.\n\nThe pouch is made from high-quality Italian leather and completely hand-stitched with waxed thread. It measures 3.54 inches (90 mm) high, 5.12 inches (130 mm) wide and 1.37 inches (35 mm) deep. The interior can accommodate up to a dozen bank cards along with a certain amount of banknotes.\n\nThe pouch fits standard belts up to 1.57 inches wide (up to 40 mm), making it a practical accessory for everyday carry. Its compact size and handmade construction also make it a thoughtful gift for a father, brother or friend.",
+    "long_description": "Keep your everyday essentials organized with this handmade brown leather belt pouch. Designed as a compact EDC carry-all, it can hold coins, bank cards, keys, banknotes and other small items in one convenient accessory.\n\nThe pouch is made from high-quality Italian leather and completely hand-stitched with waxed thread. Its compact dimensions measure 3.54 inches high × 5.12 inches wide × 1.37 inches deep (90 mm × 130 mm × 35 mm), while the belt-compatible design fits standard belts up to 1.57 inches wide (up to 40 mm).\n\nIt can hold approximately a dozen bank cards along with a certain amount of banknotes, making it useful for everyday errands, travel and hands-free carry. This handmade leather pouch also makes a practical gift for a father, brother or friend.",
     "seo_title": "Handmade Brown Leather Belt Pouch | EDC Carry-All",
-    "meta_description": "Handmade brown Italian leather belt pouch for cards, coins, keys and banknotes. Hand-stitched with waxed thread; fits belts up to 1.57 inches wide.",
+    "meta_description": "Handmade brown Italian leather belt pouch for cards, coins, keys and banknotes. Hand-stitched with waxed thread and fits belts up to 40 mm wide.",
     "warnings": [
-      "The fastening and hardware details visible in the image are not specified in the source description; confirm the exact closure and hardware materials before listing them as product specifications.",
-      "The product is described as fitting standard belts up to 1.57 inches wide (up to 40 mm); belt compatibility may depend on the belt design and fit."
+      "Capacity may vary depending on the thickness and quantity of the items carried.",
+      "The image shows visible metal fasteners and a leather strap, but the source information does not specify their material or fastening mechanism."
     ]
   }
 }
