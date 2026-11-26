@@ -630,7 +630,7 @@ def build_product_page(product, ai_data):
         page_url
     )
 
-    price_display = f"${price} {currency}"
+    price_display = f"${float(price):.2f} {currency}"
 
     shop_item = build_shop_item(product, ai_data)
 
